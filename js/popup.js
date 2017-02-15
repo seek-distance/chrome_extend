@@ -68,7 +68,6 @@ doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav")
 	}else{
 		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum+"&olderThan="+firstShopTime;
 	}
-	console.log(url)
 	$(".classify-nav li:contains("+classifyName+")").click();
 	$(".shopList").html('');
 	doGet(url,listTemplet,$(".shopList"),function(){
@@ -85,7 +84,8 @@ $(".shopList").on('click','button',function(){
 	var description=$(this).attr('data-descr');
 	var name=$(this).parent().siblings('.shop-title').text();
 	var imgUrl=$(this).attr('data-imgUrl');
-	var data={"taobaoUrl":taobaoUrl,"name":name,"description":description,"imgUrl":imgUrl};
+	var navText=$('.classify-nav .on').text();
+	var data={"taobaoUrl":taobaoUrl,"name":name,"description":description,"imgUrl":imgUrl,"navText":navText};
 
 	chrome.tabs.getSelected(null, function(tab) {
 	 	if(/http(s{0,1})\:\/\/kolplatform\.jinritemai\.com\/index\/article\/addArticle.*/.test(tab.url)){
@@ -102,6 +102,7 @@ $(".shopList").on('click','button',function(){
 
 /*监听浏览器返回数据*/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+	console.log(message);
 	if(!message){
  		$('.message').text("请关闭当前添加宝贝窗口");
  		$('.link').html('确定');
@@ -125,7 +126,6 @@ $(".shopList").scroll(function(){
 		localStorage.setItem("scrollTop",$(".shopList").scrollTop());
 		if(checkSlide() && isOk){
 			localStorage.setItem("listNum",$(".shopList>li").length);
-			console.log(1);
 			$(".reload-fix").show();
 			isOk=false;
 			var url="";
@@ -197,6 +197,7 @@ function listReload(index,name){
 	}
 	doGet(url,listTemplet,$('.shopList'));
 }
+
 
 /*获取url
 chrome.tabs.getSelected(null, function(tab) { console.log(tab.url); });

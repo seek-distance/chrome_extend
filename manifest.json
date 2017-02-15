@@ -3,7 +3,7 @@
     "version": "1.0",
     "manifest_version": 2,
     "description": "The first extension that I made.",
-    "auto": "心向远方",
+    "author": "心向远方",
     "background": {
         "scripts": ["js/jquery.js", "js/background.js"]
     },
