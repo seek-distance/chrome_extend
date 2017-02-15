@@ -34,12 +34,17 @@ html,body{
 }
 
 /* message-fix */
-.message-fix{
+.message-fix,.reload-fix{
 	position: fixed;
 	left: 0;
 	top: 30px;
 	z-index: 99;
 	display: none;
+}
+.reload-fix{
+	height: 455px;
+	width: 320px;
+	background: rgba(255, 255,255, 0.5) url('../img/load.gif') no-repeat center center;
 }
 .message-fix>div{
 	position: relative;

@@ -1,10 +1,12 @@
-var listTemplet='<li><div class="shop-img"><a href="#{taobaoUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoUrl}" target="_blank">#{name}</a></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{originalDescr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+/*商品模板*/
+var listTemplet='<li class="clearfix"><div class="shop-img"><a href="#{taobaoUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoUrl}" target="_blank">#{name}</a></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{originalDescr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
 
+/*底部导航点击*/
 $(".nav-item").click(function() {
 	$(".equal-header").text($(this).find("p").text());
 	if(!$(this).hasClass('on')){
+		localStorage.setItem("navIndex",$(this).index());
 		$(this).addClass("on").siblings().removeClass("on");
-		//$(".page-item").eq($(this).index()).fadeIn().siblings().hide();
 		if($(this).hasClass('home-item')){
 			$('.home').css('transform','translateX(0)');
 			$('.user').css('transform','translateX(320px)');
@@ -14,23 +16,27 @@ $(".nav-item").click(function() {
 		}
 	}
 })
+
+/*分类点击*/
 $(".classify-nav").on("click","li",function() {
 	if(!$(this).hasClass('on')){
+		localStorage.setItem("classifyName",$(this).text());
 		$(this).addClass("on").siblings().removeClass("on");
-		$(".shopList").html('');
-		var url="";
-		if ($(this).index()==0) {
-			url="http://www.jymao.com/ds/jobs/commodities";
-		}else{
-			url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ $(this).text() +"&limit=30"
-		}
-		doGet(url,listTemplet,$('.shopList'));
+		listReload($(this).index(),$(this).text());
 	}
 })
 
+/*双击顶部刷新*/
+$('header').dblclick(function(){
+	listReload($(".classify-nav .on").index(),$(".classify-nav .on").text());
+})
+
+/*忘记密码的展开*/
 $(".lose-title").click(function() {
 	$(".lose-content").slideToggle();
 })
+
+/*新密码校验*/
 $(".confirm-pwd").blur(function() {
 	if($(this).val() != $('.pwd').val() || $(this).val()==""){
 		$('.error').text('两次输入密码不一致').show();
@@ -46,9 +52,30 @@ $(".pwd").blur(function() {
 	}
 })
 
-doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav"));
-doGet("http://www.jymao.com/ds/jobs/commodities",listTemplet,$(".shopList"));
+/*请求页面分类和商品列表数据*/
+doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav"),function(){
+	var classifyName=localStorage.getItem("classifyName") || "全部";
+	var listNum=localStorage.getItem("listNum") || 30;
+	var firstShopTime=localStorage.getItem("firstShopTime");
+	var url='';
 
+	if (classifyName == "全部") {
+		url='http://www.jymao.com/ds/g/Commodity?olderThan='+firstShopTime;
+	}else{
+		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum+"&olderThan="+firstShopTime;
+	}
+	console.log(url)
+	$(".classify-nav li:contains("+classifyName+")").click();
+	$(".shopList").html('');
+	doGet(url,listTemplet,$(".shopList"),function(){
+		localStorage.setItem("firstShopTime",$(".shopList li").first().find('button').attr('data-time'));	
+		var scrollTop=localStorage.getItem("scrollTop") || 0;
+		$(".shopList").scrollTop(scrollTop);
+	});
+})
+/*doGet("http://www.jymao.com/ds/jobs/commodities",listTemplet,$(".shopList"));*/
+
+/*加入图集点击处理*/
 $(".shopList").on('click','button',function(){
 	var taobaoUrl=$(this).attr('data-url');
 	var description=$(this).attr('data-descr');
@@ -68,6 +95,8 @@ $(".shopList").on('click','button',function(){
 	});
 	
 })
+
+/*监听浏览器返回数据*/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(!message){
  		$('.message').text("请进入添加宝贝窗口");
@@ -75,19 +104,25 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 		$('.message-fix').fadeIn();
 	}
 })
+
+/*弹出框关闭*/
 $('.modal span').click(function(event){
 	event.stopPropagation();
 	$('.message-fix').fadeOut();
 })
 $(document).click(function(){
-	console.log(2)
 	$('.modal span').last().click();
 })
 
+/*滚动加载检测*/
 var isOk=true;
 $(".shopList").scroll(function(){
 	setTimeout(function(){
+		localStorage.setItem("scrollTop",$(".shopList").scrollTop());
 		if(checkSlide() && isOk){
+			localStorage.setItem("listNum",$(".shopList>li").length);
+			console.log(1);
+			$(".reload-fix").show();
 			isOk=false;
 			var url="";
 			var lastShopTime =  $(".shopList li").last().find('button').attr('data-time');
@@ -104,20 +139,28 @@ $(".shopList").scroll(function(){
 					$(".shopList").append(newStr);
 				}
 				isOk=true;
+				$(".reload-fix").hide();
 			})
 		}
 	},300)
 	
 })
 
+/*本地存储读取*/
+if(localStorage.getItem("navIndex")){
+	$(".nav-item").eq(localStorage.getItem("navIndex")).click();
+}
 
+/*是否加载*/
 function checkSlide(){
 	var lastShopTop=$(".shopList li").last().get(0).offsetTop + ($(".shopList li").last().outerHeight())/2;
 	var winH=$(".shopList").scrollTop() + $(".shopList").outerHeight();
 	return (winH > lastShopTop) ? true : false;
 }
 
+/*get请求封装*/
 function doGet(url,tpl,ele,fn){
+	$(".reload-fix").show();
 	$.get(url,function(data){
 		for (var i = 0; i < data.length; i++) {
 			if(data[i].taobaoUrl){
@@ -125,15 +168,30 @@ function doGet(url,tpl,ele,fn){
 			}
 			var newStr=repeatStr(tpl,data[i]);
 			ele.append(newStr);
-		}
+		}		
+		$(".reload-fix").hide();
 		fn && fn();
 	})
 }
+
+/*模板替换*/
 function repeatStr(str,data){
 	var s=str.replace(/#\{(.*?)\}/ig,function(match,value){
 		return data[value];
 	})
 	return s;
+}
+
+/*shopList刷新*/
+function listReload(index,name){
+	$(".shopList").html('');
+	var url="";
+	if (index==0) {
+		url="http://www.jymao.com/ds/g/Commodity";
+	}else{
+		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ name +"&limit=30"
+	}
+	doGet(url,listTemplet,$('.shopList'));
 }
 
 /*获取url
