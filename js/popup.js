@@ -1,5 +1,5 @@
 /*商品模板*/
-var listTemplet='<li class="clearfix"><div class="shop-img"><a href="#{taobaoUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoUrl}" target="_blank">#{name}</a></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listTemplet='<li class="clearfix"><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank">#{name}</a></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
 
 /*底部导航点击*/
 $(".nav-item").click(function() {
@@ -67,7 +67,7 @@ doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav")
 		url='http://www.jymao.com/ds/g/Commodity';
 		if(firstShopTime!="undefined")	url+='?olderThan='+firstShopTime;
 	}else{
-		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum+"&olderThan="+firstShopTime;
+		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum;
 		if(firstShopTime!="undefined")	url+='&olderThan='+firstShopTime;
 	}
 	$(".classify-nav li:contains("+classifyName+")").click();
@@ -121,7 +121,7 @@ $(".shopList").scroll(function(){
 			$(".reload-fix").show();
 			isOk=false;
 			var url="";
-			var lastShopTime =  $(".shopList li").last().find('button').attr('data-time');
+			var lastShopTime = $(".shopList li").last().find('button').attr('data-time');
 			if($('.classify-nav .on').index()==0){
 				url="http://www.jymao.com/ds/g/Commodity?olderThan="+ lastShopTime +"&limit=30";
 			}else{
@@ -130,7 +130,8 @@ $(".shopList").scroll(function(){
 			$.get(url,function(data){
 				var newStr="";
 				for (var i = 1; i < data.length; i++) {
-					if(data[i].taobaoUrl.indexOf(".jd.com")!= -1 || data[i].taobaoUrl.indexOf("ai.taobao.com") != -1)	continue;
+					if (!data[i].taobaoItemUrl) continue;
+					if(data[i].taobaoItemUrl.indexOf(".jd.com")!= -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1)	continue;
 					var str=listTemplet;
 					newStr+=repeatStr(str,data[i]);
 				}
@@ -159,11 +160,13 @@ function checkSlide(){
 function doGet(url,tpl,ele,fn){
 	$(".reload-fix").show();
 	$.get(url,function(data){
+		console.log(data);
 		var newStr="";
 		for (var i = 0; i < data.length; i++) {
-			if(data[i].taobaoUrl){
-				if(data[i].taobaoUrl.indexOf(".jd.com")!= -1 || data[i].taobaoUrl.indexOf("ai.taobao.com") != -1)	continue;
-			}
+			if (!data[i].words) {
+				if (!data[i].taobaoItemUrl) continue;
+				if(data[i].taobaoItemUrl.indexOf(".jd.com")!= -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1)	continue;
+			}			
 			newStr+=repeatStr(tpl,data[i]);
 		}
 		ele.append(newStr);
