@@ -158,7 +158,6 @@ function checkSlide(){
 function doGet(url,tpl,ele,fn){
 	$(".reload-fix").show();
 	$.get(url,function(data){
-		console.log(data);
 		var newStr="";
 		for (var i = 0; i < data.length; i++) {
 			if (!data[i].words) {
@@ -191,7 +190,6 @@ function listReload(index,name){
 		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ name +"&limit=30"
 	}
 	doGet(url,listTemplet,$('.shopList'),function(){
-		console.log($(".shopList li").first().find('button').attr('data-time'));
 		localStorage.setItem('firstShopTime',$(".shopList li").first().find('button').attr('data-time'));
 		localStorage.setItem('listNum',30);
 	});
