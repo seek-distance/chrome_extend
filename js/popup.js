@@ -26,9 +26,12 @@ $(".classify-nav").on("click","li",function() {
 	}
 })
 
-/*双击顶部刷新*/
+/*刷新*/
 $('header').dblclick(function(){
 	listReload($(".classify-nav .on").index(),$(".classify-nav .on").text());
+})
+$('.load').click(function(){
+	$('header').dblclick();
 })
 
 /*忘记密码的展开*/
@@ -60,7 +63,8 @@ doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav")
 	var url='';
 
 	if (classifyName == "全部") {
-		url='http://www.jymao.com/ds/g/Commodity?olderThan='+firstShopTime;
+		url='http://www.jymao.com/ds/g/Commodity';
+		if(firstShopTime!=null)	url+='?olderThan='+firstShopTime;
 	}else{
 		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum+"&olderThan="+firstShopTime;
 	}
@@ -99,7 +103,7 @@ $(".shopList").on('click','button',function(){
 /*监听浏览器返回数据*/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(!message){
- 		$('.message').text("请进入添加宝贝窗口");
+ 		$('.message').text("请关闭当前添加宝贝窗口");
  		$('.link').html('确定');
 		$('.message-fix').fadeIn();
 	}
