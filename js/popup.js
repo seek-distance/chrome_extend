@@ -60,13 +60,15 @@ doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav")
 	var classifyName=localStorage.getItem("classifyName") || "全部";
 	var listNum=localStorage.getItem("listNum") || 30;
 	var firstShopTime=localStorage.getItem("firstShopTime");
+	console.log(firstShopTime);
 	var url='';
 
 	if (classifyName == "全部") {
 		url='http://www.jymao.com/ds/g/Commodity';
-		if(firstShopTime!=null)	url+='?olderThan='+firstShopTime;
+		if(firstShopTime!="undefined")	url+='?olderThan='+firstShopTime;
 	}else{
 		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum+"&olderThan="+firstShopTime;
+		if(firstShopTime!="undefined")	url+='&olderThan='+firstShopTime;
 	}
 	$(".classify-nav li:contains("+classifyName+")").click();
 	$(".shopList").html('');
@@ -187,7 +189,10 @@ function listReload(index,name){
 	}else{
 		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ name +"&limit=30"
 	}
-	doGet(url,listTemplet,$('.shopList'));
+	doGet(url,listTemplet,$('.shopList'),function(){
+		localStorage.setItem('firstShopTime',$('.shopList .addToPic').first().attr("time"));
+		localStorage.setItem('listNum',30);
+	});
 }
 
 /*监听浏览器返回数据*/
