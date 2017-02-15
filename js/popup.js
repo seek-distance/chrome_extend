@@ -126,12 +126,13 @@ $(".shopList").scroll(function(){
 				url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ $('.classify-nav .on').text() +"&limit=30&olderThan="+ lastShopTime;
 			}
 			$.get(url,function(data){
+				var newStr="";
 				for (var i = 1; i < data.length; i++) {
 					if(data[i].taobaoUrl.indexOf(".jd.com")!= -1 || data[i].taobaoUrl.indexOf("ai.taobao.com") != -1)	continue;
 					var str=listTemplet;
-					var newStr=repeatStr(str,data[i]);
-					$(".shopList").append(newStr);
+					newStr+=repeatStr(str,data[i]);
 				}
+				$(".shopList").append(newStr);
 				isOk=true;
 				$(".reload-fix").hide();
 			})
@@ -156,13 +157,14 @@ function checkSlide(){
 function doGet(url,tpl,ele,fn){
 	$(".reload-fix").show();
 	$.get(url,function(data){
+		var newStr="";
 		for (var i = 0; i < data.length; i++) {
 			if(data[i].taobaoUrl){
 				if(data[i].taobaoUrl.indexOf(".jd.com")!= -1 || data[i].taobaoUrl.indexOf("ai.taobao.com") != -1)	continue;
 			}
-			var newStr=repeatStr(tpl,data[i]);
-			ele.append(newStr);
-		}		
+			newStr+=repeatStr(tpl,data[i]);
+		}
+		ele.append(newStr);
 		$(".reload-fix").hide();
 		fn && fn();
 	})
