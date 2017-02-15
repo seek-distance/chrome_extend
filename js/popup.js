@@ -100,16 +100,6 @@ $(".shopList").on('click','button',function(){
 	
 })
 
-/*监听浏览器返回数据*/
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	console.log(message);
-	if(!message){
- 		$('.message').text("请关闭当前添加宝贝窗口");
- 		$('.link').html('确定');
-		$('.message-fix').fadeIn();
-	}
-})
-
 /*弹出框关闭*/
 $('.modal span').click(function(event){
 	event.stopPropagation();
@@ -198,6 +188,14 @@ function listReload(index,name){
 	doGet(url,listTemplet,$('.shopList'));
 }
 
+/*监听浏览器返回数据*/
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+	if(!message){
+ 		$('.message').text("请关闭当前添加宝贝窗口");
+ 		$('.link').html('确定');
+		$('.message-fix').fadeIn();
+	}
+})
 
 /*获取url
 chrome.tabs.getSelected(null, function(tab) { console.log(tab.url); });
