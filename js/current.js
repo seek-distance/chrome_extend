@@ -20,10 +20,12 @@ chrome.runtime.onMessage.addListener(function(request, sender, response){
 					var imgItem = $(".commodity-image-list-container .thumb-container img");
 					if(imgItem.length>=5){
 						imgItem.last().attr('src',imgUrl);
+						imgItem.last().siblings().attr('value',imgUrl);
 					}else{
 						var tpl='<div class="thumb-container"><label><input type="radio" name="img_select" value="'+imgUrl+'" checked=""><img src="'+imgUrl+'"></label></div>';
 						$(".commodity-image-list-container .col-md-12").append(tpl);
 					}
+					$(".commodity-image-list-container .thumb-container label").last().click();
 					/*var top=Math.random()*100;
 					var right=Math.random()*100;
 					var price=$('input[data-fv-field="price"]').val();

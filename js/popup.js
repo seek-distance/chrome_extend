@@ -1,5 +1,5 @@
 /*商品模板*/
-var listTemplet='<li class="clearfix"><div class="shop-img"><a href="#{taobaoUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoUrl}" target="_blank">#{name}</a></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{originalDescr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listTemplet='<li class="clearfix"><div class="shop-img"><a href="#{taobaoUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoUrl}" target="_blank">#{name}</a></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
 
 /*底部导航点击*/
 $(".nav-item").click(function() {
@@ -199,9 +199,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
 /*获取url
 chrome.tabs.getSelected(null, function(tab) { console.log(tab.url); });
-*/
 
-/*页面通信background，content，popup
+页面通信background，content，popup
 C->P 或者 C->B 或者 b->p
 chrome.runtime.sendMessage({'名称':'传送数据'})
 P->C  B->C
