@@ -60,16 +60,14 @@ doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav")
 	var classifyName=localStorage.getItem("classifyName") || "全部";
 	var listNum=localStorage.getItem("listNum") || 30;
 	var firstShopTime=localStorage.getItem("firstShopTime");
-	console.log(firstShopTime);
 	var url='';
 
 	if (classifyName == "全部") {
-		url='http://www.jymao.com/ds/g/Commodity';
-		if(firstShopTime!="undefined")	url+='?olderThan='+firstShopTime;
+		url='http://www.jymao.com/ds/g/Commodity?limit='+listNum;
 	}else{
-		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum;
-		if(firstShopTime!="undefined")	url+='&olderThan='+firstShopTime;
+		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum;	
 	}
+	if(firstShopTime!=null && firstShopTime!="undefined" )	url+='&olderThan='+firstShopTime;
 	$(".classify-nav li:contains("+classifyName+")").click();
 	$(".shopList").html('');
 	doGet(url,listTemplet,$(".shopList"),function(){
@@ -166,7 +164,7 @@ function doGet(url,tpl,ele,fn){
 			if (!data[i].words) {
 				if (!data[i].taobaoItemUrl) continue;
 				if(data[i].taobaoItemUrl.indexOf(".jd.com")!= -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1)	continue;
-			}			
+			}
 			newStr+=repeatStr(tpl,data[i]);
 		}
 		ele.append(newStr);
@@ -188,12 +186,13 @@ function listReload(index,name){
 	$(".shopList").html('');
 	var url="";
 	if (index==0) {
-		url="http://www.jymao.com/ds/g/Commodity";
+		url="http://www.jymao.com/ds/g/Commodity?limit=30";
 	}else{
 		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ name +"&limit=30"
 	}
 	doGet(url,listTemplet,$('.shopList'),function(){
-		localStorage.setItem('firstShopTime',$('.shopList .addToPic').first().attr("time"));
+		console.log($(".shopList li").first().find('button').attr('data-time'));
+		localStorage.setItem('firstShopTime',$(".shopList li").first().find('button').attr('data-time'));
 		localStorage.setItem('listNum',30);
 	});
 }
