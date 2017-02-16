@@ -1,0 +1,8 @@
+<ul>
+	<li ng-repeat="(key, value) in nav" class="clearfix" ng-click="setOn(key)">
+		<a ui-sref="{{value.sref}}" ng-class="{true:'on',false:''}[value.on]">
+			<i class="fa {{value.class}}" aria-hidden="true"></i>
+			<span ng-bind="value.content"></span>
+		</a>
+	</li>
+</ul>

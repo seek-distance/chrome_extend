@@ -1,0 +1,33 @@
+app.config(function( $stateProvider , $urlRouterProvider ) {
+	$urlRouterProvider.otherwise('/home');
+	$stateProvider.state('home',{
+		url:'/home',
+		views:{
+			'':{
+				templateUrl:'dist/tpls/home.html'
+			},
+			'nav@home':{
+				templateUrl:'dist/tpls/nav.html',
+				controller:'navCtl'
+			},
+			'content@home':{
+				templateUrl:'dist/tpls/userMan.html'
+			}
+		}
+	})
+	.state('home.classifyMan',{
+		url:'/classifyMan',
+		views:{
+			'content@home':{
+				templateUrl:'dist/tpls/classifyMan.html',
+				controller:function($rootScope){
+					
+				}
+			}
+		}
+	})
+	.state('login',{
+		url:'/login',
+		templateUrl:'dist/tpls/login.html'
+	})
+})
