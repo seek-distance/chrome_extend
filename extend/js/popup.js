@@ -195,6 +195,7 @@ function listReload(index,name){
 	});
 }
 
+
 /*监听浏览器返回数据*/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(!message){
