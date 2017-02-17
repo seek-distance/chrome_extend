@@ -58,14 +58,14 @@ $(".pwd").blur(function() {
 /*请求页面分类和商品列表数据*/
 doGet("http://www.jymao.com/ds/g/Category","<li>#{name}</li>",$(".classify-nav"),function(){
 	var classifyName=localStorage.getItem("classifyName") || "全部";
-	var listNum=localStorage.getItem("listNum") || 30;
+	var listNum=localStorage.getItem("listNum") || 15;
 	var firstShopTime=localStorage.getItem("firstShopTime");
 	var url='';
 
 	if (classifyName == "全部") {
-		url='http://www.jymao.com/ds/g/Commodity?limit='+listNum;
+		url='http://www.jymao.com/ds/g/Commodity?limit='+listNum+'&condition[taobaoItemUrl][$exists]=true';
 	}else{
-		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&limit="+listNum;	
+		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ classifyName +"&condition[taobaoItemUrl][$exists]=true&limit="+listNum;	
 	}
 	if(firstShopTime!=null && firstShopTime!="undefined" )	url+='&olderThan='+firstShopTime;
 	$(".classify-nav li:contains("+classifyName+")").click();
@@ -121,9 +121,9 @@ $(".shopList").scroll(function(){
 			var url="";
 			var lastShopTime = $(".shopList li").last().find('button').attr('data-time');
 			if($('.classify-nav .on').index()==0){
-				url="http://www.jymao.com/ds/g/Commodity?olderThan="+ lastShopTime +"&limit=30";
+				url="http://www.jymao.com/ds/g/Commodity?olderThan="+ lastShopTime +"&limit=15&condition[taobaoItemUrl][$exists]=true";
 			}else{
-				url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ $('.classify-nav .on').text() +"&limit=30&olderThan="+ lastShopTime;
+				url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ $('.classify-nav .on').text() +"&limit=15&condition[taobaoItemUrl][$exists]=true&olderThan="+ lastShopTime;
 			}
 			$.get(url,function(data){
 				var newStr="";
@@ -185,13 +185,13 @@ function listReload(index,name){
 	$(".shopList").html('');
 	var url="";
 	if (index==0) {
-		url="http://www.jymao.com/ds/g/Commodity?limit=30";
+		url="http://www.jymao.com/ds/g/Commodity?limit=15&condition[taobaoItemUrl][$exists]=true";
 	}else{
-		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ name +"&limit=30"
+		url="http://www.jymao.com/ds/g/Commodity?condition[categories]="+ name +"&limit=15&condition[taobaoItemUrl][$exists]=true"
 	}
 	doGet(url,listTemplet,$('.shopList'),function(){
 		localStorage.setItem('firstShopTime',$(".shopList li").first().find('button').attr('data-time'));
-		localStorage.setItem('listNum',30);
+		localStorage.setItem('listNum',15);
 	});
 }
 
