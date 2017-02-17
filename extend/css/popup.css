@@ -371,6 +371,9 @@ section {
 .user li {
     border-bottom: 1px solid rgba(51, 51, 51, 0.3);
 }
+.user li:last-child{
+    border: none;
+}
 
 
 /* lose */
