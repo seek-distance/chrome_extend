@@ -4,14 +4,16 @@ app.config(function( $stateProvider , $urlRouterProvider ) {
 		url:'/home',
 		views:{
 			'':{
-				templateUrl:'dist/tpls/home.html'
+				templateUrl:'dist/tpls/home.html',
+				controller:'homeCtr'
 			},
 			'nav@home':{
 				templateUrl:'dist/tpls/nav.html',
-				controller:'navCtl'
+				controller:'navCtr'
 			},
 			'content@home':{
-				templateUrl:'dist/tpls/userMan.html'
+				templateUrl:'dist/tpls/userMan.html',
+				controller:'userManCtr'
 			}
 		}
 	})
@@ -28,6 +30,9 @@ app.config(function( $stateProvider , $urlRouterProvider ) {
 	})
 	.state('login',{
 		url:'/login',
-		templateUrl:'dist/tpls/login.html'
+		templateUrl:'dist/tpls/login.html',
+		controller:'loginCtr'
 	})
 })
+
+

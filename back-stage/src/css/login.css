@@ -14,11 +14,27 @@
 	transform: translate(-50%,-50%);
 	background: #fff;
 	border-radius: 10px;
+	padding-top: 30px;
 }
 .login-item{
-	margin: 0 auto;
+	height: 45px;
 }
-
-
-
+.login-item span{
+	width: 30%;
+	text-align: right;
+	padding-right: 20px;
+}
+.login-item input{
+	width: 60%;
+}
+.login-box .login-submit{
+	width: 100px;
+	margin:0 auto;
+	display: block;
+}
+.login-error{
+	color: #f00;
+	height: 30px;
+	text-align: center;
+}
 

@@ -12,3 +12,6 @@ a{
 	text-decoration: none;
 	color: #333;
 }
+.text-error{
+	color: #f00;
+}

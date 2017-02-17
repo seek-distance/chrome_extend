@@ -1,0 +1,6 @@
+.userMan-content{
+	padding: 10px;
+}
+.userMan-content .table-striped .text-error{
+	cursor: pointer;
+}
