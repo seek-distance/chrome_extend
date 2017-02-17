@@ -1,1 +1,47 @@
-class
+<div class="classify-content">
+	<button ng-click="addClass()" class="btn btn-success">添加类</button>
+	<table class="table table-striped text-center">
+		<thead>
+			<tr>
+				<th>类名</th>
+				<th>包含分类</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="(key, v) in classify">
+				<td ng-bind="v.name"></td>
+				<td>
+					<span ng-repeat="(key, val) in v.words track by key" ng-bind="val"></span>
+				</td>
+				<td>
+					<span ng-click="update(key)" class="text-error">修改</span>
+					<span ng-click="del(key)" class="text-error">删除</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div class="classify-alert" ng-show="showAlert" ng-click="cancel()">
+	<div class="alert-box" ng-click="$event.stopPropagation();">
+		<div class="alert-item clearfix">
+			<span class="pull-left item-title">类名：</span>
+			<span ng-if="method=='add' ? false : true" style="color:#fff;line-height:22px;margin-bottom: 5px" ng-bind="class" class=" pull-left"></span>
+			<input ng-if="method=='add' ? true : false" ng-model="$parent.class" class="pull-left" type="text">
+		</div>
+		<div class="alert-item clearfix">
+			<span class="pull-left item-title" ng-if="inClass.length>0 ? true :false">包含类名：</span>
+			<div class="pull-left">
+				<div ng-repeat="(key, v) in inClass track by $index">
+					<input type="text" ng-model="$parent.inClass[key]">
+					<i class="fa fa-times" ng-click="delInClass(key);$event.stopPropagation();" aria-hidden="true"></i>
+				</div>				
+			</div>			
+		</div>
+		<div class="btns">
+			<button class="btn btn-success" ng-click="addItem();$event.stopPropagation();">增加</button>
+			<button class="btn btn-success" ng-click="updateConfirm();$event.stopPropagation();">确定</button>
+			<button class="btn btn-success" ng-click="cancel()">取消</button>
+		</div>
+	</div>
+</div>

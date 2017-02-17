@@ -5,7 +5,7 @@
 	background-size: cover;
 	position: absolute;
 }
-.login-box{
+.login-box,.update-box{
 	height: 200px;
 	width: 400px;
 	position: absolute;

@@ -22,14 +22,12 @@ app.config(function( $stateProvider , $urlRouterProvider ) {
 		views:{
 			'content@home':{
 				templateUrl:'dist/tpls/classifyMan.html',
-				controller:function($rootScope){
-					
-				}
+				controller:'classifyManCtr'
 			}
 		}
 	})
 	.state('login',{
-		url:'/login',
+		url:'/login/:update',
 		templateUrl:'dist/tpls/login.html',
 		controller:'loginCtr'
 	})

@@ -1,5 +1,9 @@
 <div class="userMan-content">
-	<div>
+	<div class="userMan-add">
+		<input type="text" ng-model="newUser" placeholder="请输入用户名">
+		<label>
+			<input ng-model="isadmin" type="checkbox">是否为管理员
+		</label>
 		<button ng-click="add()" class="btn btn-success">添加用户</button>
 	</div>
 	<table class="table table-striped">

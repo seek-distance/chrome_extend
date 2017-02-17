@@ -1,5 +1,5 @@
 <div class="login-bg">
-	<div class="login-box">
+	<div class="login-box" ng-show="!update">
 		<div class="login-username login-item clearfix">
 			<span class="pull-left">用户名</span>
 			<input class="pull-left" type="text" ng-model="username">
@@ -12,5 +12,16 @@
 			<span ng-if="!success" class="text-error">账号或密码错误</span>
 		</div>
 		<button ng-click="submit()" class="login-submit btn btn-info">登录</button>
+	</div>
+	<div class="update-box" ng-show="update">
+		<div class="login-item clearfix">
+			<span class="pull-left">原密码</span>
+			<input class="pull-left" type="password" ng-model="oldPwd">
+		</div>
+		<div class="login-item clearfix">
+			<span class="pull-left">新密码</span>
+			<input class="pull-left" type="password" ng-model="newPwd">
+		</div>
+		<button style="display: block;margin:0 auto;width: 100px;height: 40px;" ng-click="updatePwd()" class="btn btn-info">修改</button>
 	</div>
 </div>

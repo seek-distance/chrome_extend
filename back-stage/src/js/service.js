@@ -3,20 +3,27 @@ app.factory('log', function($http){
 		in:function(data){
 			return $http({
 				method:'post',
-				url:'http://www.jymao.com/ds/login',
+				url:'http://tm.jymao.com/ds/login',
 				data:data
 			})
 		},
 		out:function(){
-			$http({
+			return $http({
 				method:'post',
-				url:'http://www.jymao.com/ds/logout'
+				url:'http://tm.jymao.com/ds/logout'
 			})
 		},
 		vail:function(){
 			return $http({
 				method:'get',
-				url:'http://www.jymao.com/ds/has-login'
+				url:'http://tm.jymao.com/ds/has-login'
+			})
+		},
+		update:function(data){
+			return $http({
+				method:'post',
+				url:'http://tm.jymao.com/ds/user/new-password',
+				data:data
 			})
 		}
 	};
@@ -27,20 +34,27 @@ app.factory('user', function($http){
 		get:function(){
 			return $http({
 				method:'get',
-				url:'http://www.jymao.com/ds/g/User'
+				url:'http://tm.jymao.com/ds/g/User'
 			})
 		},
 		del:function(data){
 			return $http({
-				method:'post',
-				url:'http://www.jymao.com/ds/user',
+				method:'DELETE',
+				url:'http://tm.jymao.com/ds/user',
 				data:data
 			})
 		},
 		add:function(data){
 			return $http({
 				method:'post',
-				url:'http://www.jymao.com/ds/user',
+				url:'http://tm.jymao.com/ds/user',
+				data:data
+			})
+		},
+		put:function(data){
+			return $http({
+				method:'PUT',
+				url:'http://tm.jymao.com/ds/user/new-password',
 				data:data
 			})
 		}
@@ -48,13 +62,28 @@ app.factory('user', function($http){
 })
 
 app.factory('classify', function($http){
-	var url='http://www.jymao.com/ds/g/Category';
-	return function(data){
-		return $http({
-			method:'post',
-			url:url,
-			data:data
-		})
+	var url='http://tm.jymao.com/ds/category';
+	return {
+		get:function(){
+			return $http({
+				method:'get',
+				url:'http://tm.jymao.com/ds/g/Category'
+			})
+		},
+		update:function(data){
+			return $http({
+				method:'post',
+				url:url,
+				data:data
+			})
+		},
+		del:function(data){
+			return $http({
+				method:'DELETE',
+				url:url,
+				data:data
+			})
+		}
 	}
 })
 
@@ -75,7 +104,7 @@ app.factory('classify', function($http){
 
 分类接口:
 得到分类: GET /ds/g/Category 一个category    {name:***, words:['***','****']}
-修改分类: PUT /ds/category  data:  name:****, words:["***", "***"]
+修改分类: post /ds/category  data:  name:****, words:["***", "***"]
 删除分类: DELETE /ds/category data: name:****
 
 分类更改后, 大致上1个小时左右, 后台会把分类应用到已有的数据上. 

@@ -1,9 +1,9 @@
 <div class="home-head">
 	<a ui-sref="home" class="home-title">后台管理</a>
 	<div class="home-user pull-right">
-		<span ng-bind="username">心向远方</span>
-		<a ui-sref="login" ng-click="exit()" class="home-login">退出系统</a>
-		<a ui-sref="login" ng-click="updatePwd()" class="home-login">修改密码</a>
+		<span ng-bind="username"></span>
+		<a style="cursor: pointer;" ng-click="exit()" class="home-login">退出系统</a>
+		<a ui-sref="login({update:'update'})" ng-click="updatePwd()" class="home-login">修改密码</a>
 	</div>
 </div>
 <div class="container-fluid home-navContent">

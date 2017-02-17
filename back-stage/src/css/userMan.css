@@ -4,3 +4,7 @@
 .userMan-content .table-striped .text-error{
 	cursor: pointer;
 }
+.userMan-add label{
+	display: inline-block;
+	margin: 0 30px;
+}
