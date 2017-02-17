@@ -9,7 +9,7 @@
 			<input class="pull-left" type="password" ng-model="password">
 		</div>
 		<div class="login-error">
-			<span ng-if="!success" class="text-error">账号或密码错误</span>
+			<span ng-show="!success" class="text-error">账号或密码错误</span>
 		</div>
 		<button ng-click="submit()" class="login-submit btn btn-info">登录</button>
 	</div>

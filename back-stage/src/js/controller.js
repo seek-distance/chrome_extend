@@ -14,7 +14,12 @@ app.controller('index', function($scope,log,$state){
 })
 
 app.controller('homeCtr', function($scope,log,$state){
-	$scope.username=sessionStorage.getItem('username');
+	log.vail().success(function(data){
+		console.log(data);
+		if (data.hasLogin) {
+			$scope.username=data.name;
+		}		
+	})
 	$scope.exit=function(){
 		log.out().success(function(){
 			sessionStorage.removeItem("username");
@@ -82,6 +87,8 @@ app.controller('loginCtr',function($scope,$state,log,$stateParams){
 			}else{
 				$scope.success=false;
 			}
+		}).error(function(){
+			$scope.success=false;
 		})
 	}
 })
