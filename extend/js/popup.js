@@ -125,9 +125,9 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         var inputVal = localStorage.getItem("inputVal");
         var url = '';
 
-
-
-
+        if (isSearch == "true") {
+            url = commoditiesURL + "&condition[tags]=" + inputVal;
+            if (classifyName != "全部") url += "&" + categoryPara + classifyName;
             $('.search-input').val(inputVal);
             $(".classify-nav li:contains(" + classifyName + ")").addClass('on').siblings().removeClass('on');
         } else {
