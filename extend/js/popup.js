@@ -202,12 +202,9 @@ $(".shopList").scroll(function() {
                 } else {
                     url = commoditiesURL + "&" + categoryPara + $('.classify-nav .on').text() + "&limit=15&olderThan=" + lastShopTime;
                 }
-
-
             } else {
                 url = commoditiesURL + "&condition[tags]=" + $('.search-input').val() + "&olderThan=" + lastShopTime + "&limit=15";
                 if ($('.classify-nav .on').index() != 0) {
-
                     url += "&" + categoryPara + $('.classify-nav .on').text();
                 }
             }
@@ -288,8 +285,6 @@ function repeatStr(str, data) {
 function listReload(index, name) {
     $(".shopList").html('');
     dedup.reset();
-
-
     var url = "";
     if (index == 0) {
         url = commoditiesURL + "&limit=15";
@@ -393,10 +388,8 @@ $('.search-input').keypress(function(e) {
 
 $('.fa-search').click(function() {
     $(".reload-fix").show();
-
     var url = commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
     if ($('.classify-nav .on').index() != 0) {
-
         url += "&" + categoryPara + $('.classify-nav .on').text()
     }
 
@@ -417,8 +410,6 @@ $('.fa-search').click(function() {
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
-
-
         localStorage.setItem("inputVal", $('.search-input').val());
         localStorage.setItem("isSearch", true);
     })
