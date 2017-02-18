@@ -141,7 +141,7 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         }
         console.log(url);
         $(".shopList").html('');
-        //dedup.reset();
+        dedup.reset();
 
         doGet(url, listTemplet, $(".shopList"), function() {
             localStorage.setItem("firstShopTime", $(".shopList li").first().find('button').attr('data-time'));
@@ -187,6 +187,8 @@ var isOk = true;
 $(".shopList").scroll(function() {
     setTimeout(function() {
         localStorage.setItem("scrollTop", $(".shopList").scrollTop());
+
+
         if (checkSlide() && isOk) {
             var isSearch = localStorage.getItem("isSearch");
             $(".reload-fix").show();
@@ -209,14 +211,15 @@ $(".shopList").scroll(function() {
 
             $.get(url, function(data) {
                 /*console.log((data.unique()));*/
+                $(".reload-fix").hide();
                 var newStr = "";
                 for (var i = 1; i < data.length; i++) {
                     if (!data[i].taobaoItemUrl) continue;
                     if (data[i].taobaoItemUrl.indexOf(".jd.com") != -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1) continue;
 
-                    //var commodityId = data[i]._id;
-                    // if (dedup.hasOne(commodityId)) continue
-                    // else dedup.addOne(commodityId)
+                    var commodityId = data[i]._id;
+                    if (dedup.hasOne(commodityId)) continue
+                    else dedup.addOne(commodityId)
 
                     var str = listTemplet;
                     newStr += repeatStr(str, data[i]);
@@ -224,7 +227,7 @@ $(".shopList").scroll(function() {
                 $(".shopList").append(newStr);
                 localStorage.setItem("listNum", $(".shopList>li").length);
                 isOk = true;
-                $(".reload-fix").hide();
+
             })
         }
     }, 300)
@@ -244,26 +247,27 @@ function checkSlide() {
 }
 
 //
-//var dedup = makeDedupObj();
+var dedup = makeDedupObj();
 
 /*get请求封装*/
 function doGet(url, tpl, ele, fn) {
     $(".reload-fix").show();
     $.get(url, function(data) {
+        $(".reload-fix").hide();
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
                 if (!data[i].taobaoItemUrl) continue;
                 if (data[i].taobaoItemUrl.indexOf(".jd.com") != -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1) continue;
 
-                //  var commodityId = data[i]._id;
-                //  if (dedup.hasOne(commodityId)) continue
-                //  else dedup.addOne(commodityId)
+                var commodityId = data[i]._id;
+                if (dedup.hasOne(commodityId)) continue
+                else dedup.addOne(commodityId)
             }
             newStr += repeatStr(tpl, data[i]);
         }
         ele.append(newStr);
-        $(".reload-fix").hide();
+
         fn && fn();
     })
 }
@@ -280,8 +284,7 @@ function repeatStr(str, data) {
 /*shopList刷新*/
 function listReload(index, name) {
     $(".shopList").html('');
-    // dedup.reset();
-
+    dedup.reset();
 
     var url = "";
     if (index == 0) {
@@ -383,13 +386,16 @@ $('.search-input').keypress(function(e) {
     }
 })
 
+
 $('.fa-search').click(function() {
     $(".reload-fix").show();
     var url = commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
     if ($('.classify-nav .on').index() != 0) {
         url += "&" + categoryPara + $('.classify-nav .on').text()
     }
+
     $.get(url, function(data) {
+        $(".reload-fix").hide();
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
@@ -401,7 +407,7 @@ $('.fa-search').click(function() {
         $('.shopList').html("");
         $('.shopList').scrollTop(0);
         $('.shopList').append(newStr);
-        $(".reload-fix").hide();
+
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
