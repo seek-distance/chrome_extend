@@ -6,10 +6,26 @@ $.ajaxSetup({
 });
 
 
-
+Array.prototype.unique=function(){
+    var arr=[];
+    var listId=[];
+    $('.shopList li').each(function(i){
+        listId.push($(this).attr('data-id'));
+    })
+    for(var i=0;i<this.length;i++){
+        //在n数组中找，没有则push添加
+        if(listId.indexOf(this[i]._id) !=-1) arr.push(i);
+    }
+    for (var i = arr.length - 1; i >= 0; i--) {
+        this.splice(i,1);
+    }
+    return this;
+}
 
 /*商品模板*/
-var listTemplet = '<li class="clearfix"><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listTemplet = '<li class="clearfix" data-id="#{_id}"><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listId=[];
+
 
 /*底部导航点击*/
 $(".nav-item").click(function() {
@@ -176,12 +192,19 @@ $(".shopList").scroll(function() {
             isOk = false;
             var url = "";
             var lastShopTime = $(".shopList li").last().find('button').attr('data-time');
-            if ($('.classify-nav .on').index() == 0) {
-                url = commoditiesURL + "&olderThan=" + lastShopTime + "&limit=15";
-            } else {
-                url = commoditiesURL + "&" + categoryPara + $('.classify-nav .on').text() + "&limit=15&olderThan=" + lastShopTime;
+
+            if ($('.classify-nav li').hasClass('on')) {
+                if ($('.classify-nav .on').index() == 0) {
+                    url = commoditiesURL + "&olderThan=" + lastShopTime + "&limit=15";
+                } else {
+                    url = commoditiesURL + "&" + categoryPara + $('.classify-nav .on').text() + "&limit=15&olderThan=" + lastShopTime;
+                }
+            }else{
+                url=commoditiesURL + "&condition[tags]=" + $('.search-input').val() + "&olderThan=" + lastShopTime + "&limit=15";
             }
+            
             $.get(url, function(data) {
+                console.log((data.unique()));
                 var newStr = "";
                 for (var i = 1; i < data.length; i++) {
                     if (!data[i].taobaoItemUrl) continue;
@@ -214,6 +237,7 @@ function checkSlide() {
 function doGet(url, tpl, ele, fn) {
     $(".reload-fix").show();
     $.get(url, function(data) {
+        console.log(data);
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
@@ -342,7 +366,7 @@ $('.search-input').keypress(function(e){
 $('.fa-search').click(function(){
     $(".classify-nav li").removeClass('on');
     $(".reload-fix").show();
-    var url=commoditiesURL + "&condition[tags]=" + $('.search-input').val();
+    var url=commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
     $.get(url,function(data){
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
@@ -353,6 +377,7 @@ $('.fa-search').click(function(){
             newStr += repeatStr(listTemplet, data[i]);
         }
         $('.shopList').html("");
+        $('.shopList').scrollTop(0);
         $('.shopList').append(newStr);
         $(".reload-fix").hide();
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
@@ -360,7 +385,6 @@ $('.fa-search').click(function(){
         localStorage.setItem("scrollTop", 0);
         localStorage.setItem("classifyName",$('.search-input').val());
         localStorage.setItem("isSearch",true);
-        $('.search-input').val("");
     })
 })
 
