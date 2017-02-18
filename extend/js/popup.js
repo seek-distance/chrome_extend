@@ -209,6 +209,7 @@ $(".shopList").scroll(function() {
 
             $.get(url, function(data) {
                 /*console.log((data.unique()));*/
+                $(".reload-fix").hide();
                 var newStr = "";
                 for (var i = 1; i < data.length; i++) {
                     if (!data[i].taobaoItemUrl) continue;
@@ -219,7 +220,6 @@ $(".shopList").scroll(function() {
                 $(".shopList").append(newStr);
                 localStorage.setItem("listNum", $(".shopList>li").length);
                 isOk = true;
-                $(".reload-fix").hide();
             })
         }
     }, 300)
@@ -245,6 +245,7 @@ var dedup = makeDedupObj();
 function doGet(url, tpl, ele, fn) {
     $(".reload-fix").show();
     $.get(url, function(data) {
+        $(".reload-fix").hide();
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
@@ -258,7 +259,6 @@ function doGet(url, tpl, ele, fn) {
             newStr += repeatStr(tpl, data[i]);
         }
         ele.append(newStr);
-        $(".reload-fix").hide();
         fn && fn();
     })
 }
@@ -385,6 +385,7 @@ $('.fa-search').click(function(){
        url += "&" + categoryPara + $('.classify-nav .on').text()
     }
     $.get(url,function(data){
+        $(".reload-fix").hide();
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
@@ -396,7 +397,6 @@ $('.fa-search').click(function(){
         $('.shopList').html("");
         $('.shopList').scrollTop(0);
         $('.shopList').append(newStr);
-        $(".reload-fix").hide();
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
