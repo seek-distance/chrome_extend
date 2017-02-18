@@ -127,7 +127,7 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         console.log(url);
         $(".shopList").html('');
         dedup.reset();
-        
+
         doGet(url, listTemplet, $(".shopList"), function() {
             localStorage.setItem("firstShopTime", $(".shopList li").first().find('button').attr('data-time'));
             var scrollTop = localStorage.getItem("scrollTop") || 0;
@@ -250,6 +250,7 @@ function repeatStr(str, data) {
 function listReload(index, name) {
     $(".shopList").html('');
     dedup.reset();
+
 
     var url = "";
     if (index == 0) {
