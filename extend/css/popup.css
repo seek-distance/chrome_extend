@@ -241,6 +241,8 @@ section {
 
 .home {
     transform: translateX(0);
+    background: white;
+    z-index: 1;
 }
 
 .login {
@@ -352,8 +354,9 @@ section {
 /* user */
 
 .user {
-    transform: translateX(320px);
-    z-index: -1;
+    transform: translateX(0px);
+    z-index: 0;
+    background: white;
 }
 
 .user-left {
