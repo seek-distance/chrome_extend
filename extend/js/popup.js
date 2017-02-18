@@ -41,7 +41,7 @@ $(".nav-item").click(function() {
     }
 })
 
-
+var navText = "";
 /*发送信息*/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message) {
@@ -141,7 +141,7 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         }
         console.log(url);
         $(".shopList").html('');
-        dedup.reset();
+        //dedup.reset();
 
         doGet(url, listTemplet, $(".shopList"), function() {
             localStorage.setItem("firstShopTime", $(".shopList li").first().find('button').attr('data-time'));
@@ -154,10 +154,10 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
 /*加入图集点击处理*/
 $(".shopList").on('click', 'button', function() {
     var taobaoUrl = $(this).attr('data-url');
-    var description = ""; //$(this).attr('data-descr');
+    var description = "随机描述生成中,请稍等..."; //$(this).attr('data-descr');
     var name = $(this).parent().siblings('.shop-title').find("a").attr("title");
     var imgUrl = $(this).attr('data-imgUrl');
-    var navText = $('.classify-nav .on').text();
+    navText = $('.classify-nav .on').text();
     var data = { "taobaoUrl": taobaoUrl, "name": name, "description": description, "imgUrl": imgUrl, "navText": navText };
 
     chrome.tabs.getSelected(null, function(tab) {
@@ -214,9 +214,9 @@ $(".shopList").scroll(function() {
                     if (!data[i].taobaoItemUrl) continue;
                     if (data[i].taobaoItemUrl.indexOf(".jd.com") != -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1) continue;
 
-                    var commodityId = data[i]._id;
-                    if (dedup.hasOne(commodityId)) continue
-                    else dedup.addOne(commodityId)
+                    //var commodityId = data[i]._id;
+                    // if (dedup.hasOne(commodityId)) continue
+                    // else dedup.addOne(commodityId)
 
                     var str = listTemplet;
                     newStr += repeatStr(str, data[i]);
@@ -244,7 +244,7 @@ function checkSlide() {
 }
 
 //
-var dedup = makeDedupObj();
+//var dedup = makeDedupObj();
 
 /*get请求封装*/
 function doGet(url, tpl, ele, fn) {
@@ -256,9 +256,9 @@ function doGet(url, tpl, ele, fn) {
                 if (!data[i].taobaoItemUrl) continue;
                 if (data[i].taobaoItemUrl.indexOf(".jd.com") != -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1) continue;
 
-                var commodityId = data[i]._id;
-                if (dedup.hasOne(commodityId)) continue
-                else dedup.addOne(commodityId)
+                //  var commodityId = data[i]._id;
+                //  if (dedup.hasOne(commodityId)) continue
+                //  else dedup.addOne(commodityId)
             }
             newStr += repeatStr(tpl, data[i]);
         }
@@ -280,7 +280,7 @@ function repeatStr(str, data) {
 /*shopList刷新*/
 function listReload(index, name) {
     $(".shopList").html('');
-    dedup.reset();
+    // dedup.reset();
 
 
     var url = "";
