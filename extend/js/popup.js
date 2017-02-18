@@ -23,7 +23,7 @@ $.ajaxSetup({
 }*/
 
 /*商品模板*/
-var listTemplet = '<li class="clearfix commodity" data-commodityId=#{_id}><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="deprecated" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listTemplet = '<li class="clearfix" ><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="deprecated" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
 
 /*底部导航点击*/
 $(".nav-item").click(function() {
@@ -125,12 +125,12 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         var inputVal = localStorage.getItem("inputVal");
         var url = '';
 
-        if (isSearch=="true") {
-            url=commoditiesURL + "&condition[tags]=" + inputVal;
-            if (classifyName != "全部")    url += "&" + categoryPara + classifyName;
+
+
+
             $('.search-input').val(inputVal);
             $(".classify-nav li:contains(" + classifyName + ")").addClass('on').siblings().removeClass('on');
-        }else{            
+        } else {
             if (classifyName == "全部") {
                 url = commoditiesURL + "&limit=" + listNum;
             } else {
@@ -187,8 +187,10 @@ var isOk = true;
 $(".shopList").scroll(function() {
     setTimeout(function() {
         localStorage.setItem("scrollTop", $(".shopList").scrollTop());
-        if (checkSlide() && isOk) {            
-            var isSearch=localStorage.getItem("isSearch");
+
+
+        if (checkSlide() && isOk) {
+            var isSearch = localStorage.getItem("isSearch");
             $(".reload-fix").show();
             isOk = false;
             var url = "";
@@ -200,10 +202,13 @@ $(".shopList").scroll(function() {
                 } else {
                     url = commoditiesURL + "&" + categoryPara + $('.classify-nav .on').text() + "&limit=15&olderThan=" + lastShopTime;
                 }
-            }else {
-                url=commoditiesURL + "&condition[tags]=" + $('.search-input').val() + "&olderThan=" + lastShopTime + "&limit=15";
+
+
+            } else {
+                url = commoditiesURL + "&condition[tags]=" + $('.search-input').val() + "&olderThan=" + lastShopTime + "&limit=15";
                 if ($('.classify-nav .on').index() != 0) {
-                    url+="&" + categoryPara + $('.classify-nav .on').text();
+
+                    url += "&" + categoryPara + $('.classify-nav .on').text();
                 }
             }
 
@@ -214,12 +219,18 @@ $(".shopList").scroll(function() {
                 for (var i = 1; i < data.length; i++) {
                     if (!data[i].taobaoItemUrl) continue;
                     if (data[i].taobaoItemUrl.indexOf(".jd.com") != -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1) continue;
+
+                    var commodityId = data[i]._id;
+                    if (dedup.hasOne(commodityId)) continue
+                    else dedup.addOne(commodityId)
+
                     var str = listTemplet;
                     newStr += repeatStr(str, data[i]);
                 }
                 $(".shopList").append(newStr);
                 localStorage.setItem("listNum", $(".shopList>li").length);
                 isOk = true;
+
             })
         }
     }, 300)
@@ -259,6 +270,7 @@ function doGet(url, tpl, ele, fn) {
             newStr += repeatStr(tpl, data[i]);
         }
         ele.append(newStr);
+
         fn && fn();
     })
 }
@@ -378,13 +390,17 @@ $('.search-input').keypress(function(e) {
     }
 })
 
-$('.fa-search').click(function(){
+
+$('.fa-search').click(function() {
     $(".reload-fix").show();
-    var url=commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
+
+    var url = commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
     if ($('.classify-nav .on').index() != 0) {
-       url += "&" + categoryPara + $('.classify-nav .on').text()
+
+        url += "&" + categoryPara + $('.classify-nav .on').text()
     }
-    $.get(url,function(data){
+
+    $.get(url, function(data) {
         $(".reload-fix").hide();
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
@@ -397,11 +413,14 @@ $('.fa-search').click(function(){
         $('.shopList').html("");
         $('.shopList').scrollTop(0);
         $('.shopList').append(newStr);
+
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
-        localStorage.setItem("inputVal",$('.search-input').val());
-        localStorage.setItem("isSearch",true);
+
+
+        localStorage.setItem("inputVal", $('.search-input').val());
+        localStorage.setItem("isSearch", true);
     })
 })
 
