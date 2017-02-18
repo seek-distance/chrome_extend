@@ -24,7 +24,6 @@ $.ajaxSetup({
 
 /*商品模板*/
 var listTemplet = '<li class="clearfix commodity" data-commodityId=#{_id}><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="deprecated" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
-//var listId=[];
 
 /*底部导航点击*/
 $(".nav-item").click(function() {
@@ -123,16 +122,17 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         var listNum = localStorage.getItem("listNum") || 15;
         var firstShopTime = localStorage.getItem("firstShopTime");
         var isSearch = localStorage.getItem("isSearch");
+        var inputVal = localStorage.getItem("inputVal");
         var url = '';
 
-        console.log(typeof isSearch)
-        if (isSearch == "true") {
-            url = commoditiesURL + "&condition[tags]=" + classifyName;
-            $(".classify-nav li").removeClass();
-            $('.search-input').val(classifyName);
-        } else {
+        if (isSearch=="true") {
+            url=commoditiesURL + "&condition[tags]=" + inputVal;
+            if (classifyName != "全部")    url += "&" + categoryPara + classifyName;
+            $('.search-input').val(inputVal);
+            $(".classify-nav li:contains(" + classifyName + ")").addClass('on').siblings().removeClass('on');
+        }else{            
             if (classifyName == "全部") {
-                url = commoditiesURL + "&listNum=" + listNum;
+                url = commoditiesURL + "&limit=" + listNum;
             } else {
                 url = commoditiesURL + "&" + categoryPara + classifyName + "&limit=" + listNum;
             }
@@ -187,14 +187,14 @@ var isOk = true;
 $(".shopList").scroll(function() {
     setTimeout(function() {
         localStorage.setItem("scrollTop", $(".shopList").scrollTop());
-        if (checkSlide() && isOk) {
-            localStorage.setItem("listNum", $(".shopList>li").length);
+        if (checkSlide() && isOk) {            
+            var isSearch=localStorage.getItem("isSearch");
             $(".reload-fix").show();
             isOk = false;
             var url = "";
             var lastShopTime = $(".shopList li").last().find('button').attr('data-time');
 
-            if ($('.classify-nav li').hasClass('on')) {
+            if (isSearch != 'true') {
                 if ($('.classify-nav .on').index() == 0) {
                     url = commoditiesURL + "&olderThan=" + lastShopTime + "&limit=15";
                 } else {
@@ -202,6 +202,9 @@ $(".shopList").scroll(function() {
                 }
             }else {
                 url=commoditiesURL + "&condition[tags]=" + $('.search-input').val() + "&olderThan=" + lastShopTime + "&limit=15";
+                if ($('.classify-nav .on').index() != 0) {
+                    url+="&" + categoryPara + $('.classify-nav .on').text();
+                }
             }
 
             $.get(url, function(data) {
@@ -214,6 +217,7 @@ $(".shopList").scroll(function() {
                     newStr += repeatStr(str, data[i]);
                 }
                 $(".shopList").append(newStr);
+                localStorage.setItem("listNum", $(".shopList>li").length);
                 isOk = true;
                 $(".reload-fix").hide();
             })
@@ -373,11 +377,14 @@ $('.search-input').keypress(function(e) {
         $('.fa-search').click();
     }
 })
-$('.fa-search').click(function() {
-    $(".classify-nav li").removeClass('on');
+
+$('.fa-search').click(function(){
     $(".reload-fix").show();
-    var url = commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
-    $.get(url, function(data) {
+    var url=commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
+    if ($('.classify-nav .on').index() != 0) {
+       url += "&" + categoryPara + $('.classify-nav .on').text()
+    }
+    $.get(url,function(data){
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
@@ -393,7 +400,7 @@ $('.fa-search').click(function() {
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
-        localStorage.setItem("classifyName",$('.search-input').val());
+        localStorage.setItem("inputVal",$('.search-input').val());
         localStorage.setItem("isSearch",true);
         $('.search-input').val("");
     })
