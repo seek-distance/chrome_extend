@@ -35,8 +35,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, response){
 					formGroup.css('position','relative');
 					formGroup.append('<button class="btn btn-danger reload" style="outline:none;position:absolute;right:0;top:0;padding:0 10px">重新生成</button>')
 					$(".reload").click(function(){
-						chrome.runtime.sendMessage(true)
+						chrome.runtime.sendMessage(true);
 					})
+					$(".reload").click();
 				}
 				
 			},300)

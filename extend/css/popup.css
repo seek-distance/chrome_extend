@@ -256,9 +256,29 @@ section {
     width: 240px;
     margin-left: 80px;
     height: 450px;
-    overflow: auto
+    overflow: hidden;
 }
-
+.search{
+    position: relative;
+}
+.search input{
+    width: 100%;
+    height: 25px;
+    padding:0 5px;
+    margin: 3px 0;
+}
+.search .fa{
+    position: absolute;
+    font-size: 20px;
+    right: 5px;
+    top: 5px;
+    height: 25px;
+    cursor: pointer;
+}
+.shopList{
+    overflow: auto;
+    height: 419px;
+}
 .row li {
     padding: 2px;
 }
@@ -300,7 +320,7 @@ section {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width:100%;
+    width: 100%;
 }
 
 .row .shop-price {
@@ -333,7 +353,7 @@ section {
 }
 
 .classify-nav li {
-    height: 40px;
+    min-height: 40px;
     line-height: 40px;
     text-align: center;
     cursor: pointer;
@@ -372,7 +392,8 @@ section {
 .user li {
     border-bottom: 1px solid rgba(51, 51, 51, 0.3);
 }
-.user li:last-child{
+
+.user li:last-child {
     border: none;
 }
 

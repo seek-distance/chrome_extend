@@ -14,7 +14,8 @@ var listTemplet = '<li class="clearfix"><div class="shop-img"><a href="#{taobaoI
 /*底部导航点击*/
 $(".nav-item").click(function() {
     $(".equal-header .page-name").text($(this).find("p").text());
-    if (!$(this).hasClass('on')) {
+    if (!$(this).hasClass('on')) {        
+        localStorage.setItem("isSearch",false);
         localStorage.setItem("navIndex", $(this).index());
         $(this).addClass("on").siblings().removeClass("on");
         if ($(this).hasClass('home-item')) {
@@ -115,15 +116,23 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         var classifyName = localStorage.getItem("classifyName") || "全部";
         var listNum = localStorage.getItem("listNum") || 15;
         var firstShopTime = localStorage.getItem("firstShopTime");
+        var isSearch = localStorage.getItem("isSearch");
         var url = '';
 
-        if (classifyName == "全部") {
-            url = commoditiesURL + "&listNum=" + listNum;
-        } else {
-            url = commoditiesURL + "&" + categoryPara + classifyName + "&limit=" + listNum;
+        if (isSearch) {
+            url=commoditiesURL + "&condition[tags]=" + classifyName;
+            $(".classify-nav li").removeClass();
+            $('.search-input').val(classifyName);
+        }else{            
+            if (classifyName == "全部") {
+                url = commoditiesURL + "&listNum=" + listNum;
+            } else {
+                url = commoditiesURL + "&" + categoryPara + classifyName + "&limit=" + listNum;
+            }
+            if (firstShopTime != null && firstShopTime != "undefined") url += '&olderThan=' + firstShopTime;
+            $(".classify-nav li:contains(" + classifyName + ")").addClass('on').siblings().removeClass('on');
         }
-        if (firstShopTime != null && firstShopTime != "undefined") url += '&olderThan=' + firstShopTime;
-        $(".classify-nav li:contains(" + classifyName + ")").click();
+        console.log(url);
         $(".shopList").html('');
         doGet(url, listTemplet, $(".shopList"), function() {
             localStorage.setItem("firstShopTime", $(".shopList li").first().find('button').attr('data-time'));
@@ -227,6 +236,7 @@ function doGet(url, tpl, ele, fn) {
     })
 }
 
+
 /*模板替换*/
 function repeatStr(str, data) {
     var s = str.replace(/#\{(.*?)\}/ig, function(match, value) {
@@ -246,7 +256,7 @@ function listReload(index, name) {
     }
     doGet(url, listTemplet, $('.shopList'), function() {
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
-        localStorage.setItem('listNum', 30);
+        localStorage.setItem('listNum', 15);
     });
 }
 
@@ -269,7 +279,7 @@ chrome.runtime.sendMessage({'名称':'传送数据'})
 P->C  B->C
 chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
            chrome.tabs.sendMessage(tabs[0].id, {'名称':'值'}, function(response) {
-               	//向 content_script 发送消息
+                //向 content_script 发送消息
            });  
        })
 接收消息都是 
@@ -281,7 +291,6 @@ alert(JSON.stringify(message)) //这里获取到消息值与名称
 var host = "http://tm.jymao.com"
 $.get(host + "/ds/has-login")
     .then(function(res) {
-        console.log(res)
         var hasLogin = res.hasLogin;
         if (hasLogin) {
             $(".my-name").text(res.name)
@@ -311,7 +320,6 @@ $(".login .password input").keyup(function() {
 $(".loginBtn").click(function() {
     var name = $(".login .user-name input").val();
     var password = $(".login .password input").val();
-    console.log(name, password)
     $.post("http://tm.jymao.com/ds/login", {
         name: name,
         password: password
@@ -332,3 +340,34 @@ $(".loginBtn").click(function() {
     })
     return false;
 })
+
+/*search*/
+$('.search-input').keypress(function(e){
+    if(e.which == 13){
+        $('.fa-search').click();
+    }
+})
+$('.fa-search').click(function(){
+    $(".classify-nav li").removeClass('on');
+    $(".reload-fix").show();
+    $.get(host+"/ds/g/Category?condition[tags]="+ $('.search-input').val(),function(data){
+        var newStr = "";
+        for (var i = 0; i < data.length; i++) {
+            if (!data[i].words) {
+                if (!data[i].taobaoItemUrl) continue;
+                if (data[i].taobaoItemUrl.indexOf(".jd.com") != -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1) continue;
+            }
+            newStr += repeatStr(listTemplet, data[i]);
+        }
+        $('.shopList').html("");
+        $('.shopList').append(newStr);
+        $(".reload-fix").hide();
+        localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
+        localStorage.setItem('listNum', 15);
+        localStorage.setItem("scrollTop", 0);
+        localStorage.setItem("classifyName",$('.search-input').val());
+        localStorage.setItem("isSearch",true);
+        $('.search-input').val("");
+    })
+})
+
