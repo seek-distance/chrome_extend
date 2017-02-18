@@ -6,7 +6,7 @@ $.ajaxSetup({
 });
 
 
-Array.prototype.unique=function(){
+/*Array.prototype.unique=function(){
     var arr=[];
     var listId=[];
     $('.shopList li').each(function(i){
@@ -20,10 +20,10 @@ Array.prototype.unique=function(){
         this.splice(i,1);
     }
     return this;
-}
+}*/
 
 /*商品模板*/
-var listTemplet = '<li class="clearfix" data-id="#{_id}"><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listTemplet = '<li class="clearfix"><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
 var listId=[];
 
 
@@ -204,7 +204,7 @@ $(".shopList").scroll(function() {
             }
             
             $.get(url, function(data) {
-                console.log((data.unique()));
+                /*console.log((data.unique()));*/
                 var newStr = "";
                 for (var i = 1; i < data.length; i++) {
                     if (!data[i].taobaoItemUrl) continue;
