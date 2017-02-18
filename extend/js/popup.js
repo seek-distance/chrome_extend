@@ -15,7 +15,6 @@ var listTemplet = '<li class="clearfix"><div class="shop-img"><a href="#{taobaoI
 $(".nav-item").click(function() {
     $(".equal-header .page-name").text($(this).find("p").text());
     if (!$(this).hasClass('on')) {        
-        localStorage.setItem("isSearch",false);
         localStorage.setItem("navIndex", $(this).index());
         $(this).addClass("on").siblings().removeClass("on");
         if ($(this).hasClass('home-item')) {
@@ -29,16 +28,6 @@ $(".nav-item").click(function() {
 })
 
 
-var navText = "";
-
-function get(data) {
-    navText = data.navText;
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, data, function(response) {
-            chrome.runtime.sendMessage(response);
-        });
-    })
-}
 /*发送信息*/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message) {
@@ -56,6 +45,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 /*分类点击*/
 $(".classify-nav").on("click", "li", function() {
     if (!$(this).hasClass('on')) {
+        $('.search-input').val("");
+        localStorage.setItem("isSearch",false);
         localStorage.setItem("classifyName", $(this).text());
         $(this).addClass("on").siblings().removeClass("on");
         listReload($(this).index(), $(this).text());
@@ -119,7 +110,8 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         var isSearch = localStorage.getItem("isSearch");
         var url = '';
 
-        if (isSearch) {
+        console.log(typeof isSearch)
+        if (isSearch=="true") {
             url=commoditiesURL + "&condition[tags]=" + classifyName;
             $(".classify-nav li").removeClass();
             $('.search-input').val(classifyName);
@@ -350,7 +342,8 @@ $('.search-input').keypress(function(e){
 $('.fa-search').click(function(){
     $(".classify-nav li").removeClass('on');
     $(".reload-fix").show();
-    $.get(host+"/ds/g/Category?condition[tags]="+ $('.search-input').val(),function(data){
+    var url=commoditiesURL + "&condition[tags]=" + $('.search-input').val();
+    $.get(url,function(data){
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
