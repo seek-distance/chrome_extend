@@ -146,7 +146,7 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
 $(".shopList").on('click', 'button', function() {
     var taobaoUrl = $(this).attr('data-url');
     var description = $(this).attr('data-descr');
-    var name = $(this).parent().siblings('.shop-title').text();
+    var name = $(this).parent().siblings('.shop-title').find("a").attr("title");
     var imgUrl = $(this).attr('data-imgUrl');
     var navText = $('.classify-nav .on').text();
     var data = { "taobaoUrl": taobaoUrl, "name": name, "description": description, "imgUrl": imgUrl, "navText": navText };
