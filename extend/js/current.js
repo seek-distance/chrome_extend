@@ -16,7 +16,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, response){
 					if(nameInput.val()!="" && (nameInput.val().length>20 || nameInput.val().length<6)){
 						nameInput.val(name);
 					}
-					$("textarea[data-fv-field='description']").val(description);
 					var imgItem = $(".commodity-image-list-container .thumb-container img");
 					if(imgItem.length>=5){
 						imgItem.last().attr('src',imgUrl);
