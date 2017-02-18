@@ -402,7 +402,6 @@ $('.fa-search').click(function(){
         localStorage.setItem("scrollTop", 0);
         localStorage.setItem("inputVal",$('.search-input').val());
         localStorage.setItem("isSearch",true);
-        $('.search-input').val("");
     })
 })
 
