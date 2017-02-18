@@ -6,7 +6,6 @@ app.config(['$httpProvider', function($httpProvider,$injector) {
 
 app.controller('index', function($scope,log,$state){	
 	log.vail().success(function(data){
-		console.log(data);
 		if (!data.hasLogin && !sessionStorage.getItem('username')) {
 			$state.go('login');
 		}
@@ -15,7 +14,6 @@ app.controller('index', function($scope,log,$state){
 
 app.controller('homeCtr', function($scope,log,$state){
 	log.vail().success(function(data){
-		console.log(data);
 		if (data.hasLogin) {
 			$scope.username=data.name;
 		}		
@@ -71,8 +69,9 @@ app.controller('loginCtr',function($scope,$state,log,$stateParams){
 	$scope.updatePwd=function(){
 		var data={newPwd:$scope.newPwd,oldPwd:$scope.oldPwd};
 		log.update(data).success(function(data){
-			$state.go('login');
+			$state.go('home');
 		}).error(function(){
+			console.log(1)
 			alert("原密码错误")
 		})
 	}
