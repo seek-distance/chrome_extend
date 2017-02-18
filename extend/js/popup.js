@@ -9,12 +9,12 @@ $.ajaxSetup({
 
 
 /*商品模板*/
-var listTemplet = '<li class="clearfix"><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="#{descr}" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listTemplet = '<li class="clearfix commodity" data-commodityId=#{_id}><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="deprecated" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
 
 /*底部导航点击*/
 $(".nav-item").click(function() {
     $(".equal-header .page-name").text($(this).find("p").text());
-    if (!$(this).hasClass('on')) {        
+    if (!$(this).hasClass('on')) {
         localStorage.setItem("navIndex", $(this).index());
         $(this).addClass("on").siblings().removeClass("on");
         if ($(this).hasClass('home-item')) {
@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 $(".classify-nav").on("click", "li", function() {
     if (!$(this).hasClass('on')) {
         $('.search-input').val("");
-        localStorage.setItem("isSearch",false);
+        localStorage.setItem("isSearch", false);
         localStorage.setItem("classifyName", $(this).text());
         $(this).addClass("on").siblings().removeClass("on");
         listReload($(this).index(), $(this).text());
@@ -99,7 +99,7 @@ $(".changeBtn").click(function() {
     }
 })
 
-var commoditiesURL = "http://tm.jymao.com/ds/g/Commodity?condition[taobaoItemUrl][$ne]=working&condition[taobaoItemUrl][$exists]=true";
+var commoditiesURL = "http://tm.jymao.com/ds/g/Commodity?select=-tags -taobaoUrl -descr -originalDescr&condition[taobaoItemUrl][$ne]=working&condition[taobaoItemUrl][$exists]=true";
 var categoryPara = "condition[categories]="
 
 /*请求页面分类和商品列表数据*/
@@ -111,11 +111,11 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         var url = '';
 
         console.log(typeof isSearch)
-        if (isSearch=="true") {
-            url=commoditiesURL + "&condition[tags]=" + classifyName;
+        if (isSearch == "true") {
+            url = commoditiesURL + "&condition[tags]=" + classifyName;
             $(".classify-nav li").removeClass();
             $('.search-input').val(classifyName);
-        }else{            
+        } else {
             if (classifyName == "全部") {
                 url = commoditiesURL + "&listNum=" + listNum;
             } else {
@@ -126,6 +126,8 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         }
         console.log(url);
         $(".shopList").html('');
+        dedup.reset();
+        
         doGet(url, listTemplet, $(".shopList"), function() {
             localStorage.setItem("firstShopTime", $(".shopList li").first().find('button').attr('data-time'));
             var scrollTop = localStorage.getItem("scrollTop") || 0;
@@ -137,7 +139,7 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
 /*加入图集点击处理*/
 $(".shopList").on('click', 'button', function() {
     var taobaoUrl = $(this).attr('data-url');
-    var description = $(this).attr('data-descr');
+    var description = ""; //$(this).attr('data-descr');
     var name = $(this).parent().siblings('.shop-title').find("a").attr("title");
     var imgUrl = $(this).attr('data-imgUrl');
     var navText = $('.classify-nav .on').text();
@@ -210,6 +212,9 @@ function checkSlide() {
     return (winH > lastShopTop) ? true : false;
 }
 
+//
+var dedup = makeDedupObj();
+
 /*get请求封装*/
 function doGet(url, tpl, ele, fn) {
     $(".reload-fix").show();
@@ -219,6 +224,10 @@ function doGet(url, tpl, ele, fn) {
             if (!data[i].words) {
                 if (!data[i].taobaoItemUrl) continue;
                 if (data[i].taobaoItemUrl.indexOf(".jd.com") != -1 || data[i].taobaoItemUrl.indexOf("ai.taobao.com") != -1) continue;
+
+                var commodityId = data[i]._id;
+                if (dedup.hasOne(commodityId)) continue
+                else dedup.addOne(commodityId)
             }
             newStr += repeatStr(tpl, data[i]);
         }
@@ -240,6 +249,8 @@ function repeatStr(str, data) {
 /*shopList刷新*/
 function listReload(index, name) {
     $(".shopList").html('');
+    dedup.reset();
+
     var url = "";
     if (index == 0) {
         url = commoditiesURL + "&limit=15";
@@ -334,16 +345,16 @@ $(".loginBtn").click(function() {
 })
 
 /*search*/
-$('.search-input').keypress(function(e){
-    if(e.which == 13){
+$('.search-input').keypress(function(e) {
+    if (e.which == 13) {
         $('.fa-search').click();
     }
 })
-$('.fa-search').click(function(){
+$('.fa-search').click(function() {
     $(".classify-nav li").removeClass('on');
     $(".reload-fix").show();
-    var url=commoditiesURL + "&condition[tags]=" + $('.search-input').val();
-    $.get(url,function(data){
+    var url = commoditiesURL + "&condition[tags]=" + $('.search-input').val();
+    $.get(url, function(data) {
         var newStr = "";
         for (var i = 0; i < data.length; i++) {
             if (!data[i].words) {
@@ -358,9 +369,25 @@ $('.fa-search').click(function(){
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
-        localStorage.setItem("classifyName",$('.search-input').val());
-        localStorage.setItem("isSearch",true);
+        localStorage.setItem("classifyName", $('.search-input').val());
+        localStorage.setItem("isSearch", true);
         $('.search-input').val("");
     })
 })
 
+
+function makeDedupObj() {
+    var ids = {};
+
+    return {
+        reset: function() {
+            ids = {};
+        },
+        hasOne: function(id) {
+            return !!ids[id]
+        },
+        addOne: function(id) {
+            ids[id] = true;
+        }
+    }
+}

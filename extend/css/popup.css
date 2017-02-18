@@ -249,6 +249,7 @@ section {
     background: white;
     height: 500px;
     z-index: 2;
+    display:none;
 }
 
 
