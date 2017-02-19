@@ -58,13 +58,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 /*分类点击*/
 $(".classify-nav").on("click", "li", function() {
-    if (!$(this).hasClass('on')) {
-        $('.search-input').val("");
-        localStorage.setItem("isSearch", false);
-        localStorage.setItem("classifyName", $(this).text());
-        $(this).addClass("on").siblings().removeClass("on");
-        listReload($(this).index(), $(this).text());
-    }
+    //    if (!$(this).hasClass('on')) {
+    $('.search-input').val("");
+    localStorage.setItem("isSearch", false);
+    localStorage.setItem("classifyName", $(this).text());
+    $(this).addClass("on").siblings().removeClass("on");
+    listReload($(this).index(), $(this).text());
+    //   } 
 })
 
 /*刷新*/
@@ -388,8 +388,14 @@ $('.search-input').keypress(function(e) {
 
 
 $('.fa-search').click(function() {
+    var keyword = $('.search-input').val();
+    keyword = keyword.replace(" ", "");
+    if (!keyword) {
+        $(".classify-nav li.on").click();
+        return;
+    }
     $(".reload-fix").show();
-    var url = commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
+    var url = commoditiesURL + "&limit=15&condition[tags]=" + keyword;
     if ($('.classify-nav .on').index() != 0) {
         url += "&" + categoryPara + $('.classify-nav .on').text()
     }
@@ -411,7 +417,7 @@ $('.fa-search').click(function() {
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
-        localStorage.setItem("inputVal", $('.search-input').val());
+        localStorage.setItem("inputVal", keyword);
         localStorage.setItem("isSearch", true);
     })
 })
