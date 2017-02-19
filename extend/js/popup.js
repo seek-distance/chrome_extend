@@ -41,21 +41,6 @@ $(".nav-item").click(function() {
     }
 })
 
-
-/*发送信息*/
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if (message) {
-        console.log(message);
-        $.get('http://tm.jymao.com/ds/jobs/gen-descr?category=' + navText, function(data) {
-            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, { 'text': data }, function(response) {
-                    //向 content_script 发送消息
-                });
-            })
-        }, "text")
-    }
-})
-
 /*分类点击*/
 $(".classify-nav").on("click", "li", function() {
     if (!$(this).hasClass('on')) {
