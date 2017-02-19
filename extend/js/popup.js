@@ -41,15 +41,16 @@ $(".nav-item").click(function() {
     }
 })
 
+
 /*分类点击*/
 $(".classify-nav").on("click", "li", function() {
-    if (!$(this).hasClass('on')) {
-        $('.search-input').val("");
-        localStorage.setItem("isSearch", false);
-        localStorage.setItem("classifyName", $(this).text());
-        $(this).addClass("on").siblings().removeClass("on");
-        listReload($(this).index(), $(this).text());
-    }
+    //    if (!$(this).hasClass('on')) {
+    $('.search-input').val("");
+    localStorage.setItem("isSearch", false);
+    localStorage.setItem("classifyName", $(this).text());
+    $(this).addClass("on").siblings().removeClass("on");
+    listReload($(this).index(), $(this).text());
+    //   } 
 })
 
 /*刷新*/
@@ -139,10 +140,10 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
 /*加入图集点击处理*/
 $(".shopList").on('click', 'button', function() {
     var taobaoUrl = $(this).attr('data-url');
-    var description = ""; //$(this).attr('data-descr');
+    var description = "随机描述生成中,请稍等..."; //$(this).attr('data-descr');
     var name = $(this).parent().siblings('.shop-title').find("a").attr("title");
     var imgUrl = $(this).attr('data-imgUrl');
-    var navText = $('.classify-nav .on').text();
+    navText = $('.classify-nav .on').text();
     var data = { "taobaoUrl": taobaoUrl, "name": name, "description": description, "imgUrl": imgUrl, "navText": navText };
 
     chrome.tabs.getSelected(null, function(tab) {
@@ -270,6 +271,7 @@ function repeatStr(str, data) {
 function listReload(index, name) {
     $(".shopList").html('');
     dedup.reset();
+
     var url = "";
     if (index == 0) {
         url = commoditiesURL + "&limit=15";
@@ -372,8 +374,15 @@ $('.search-input').keypress(function(e) {
 
 
 $('.fa-search').click(function() {
+    var keyword = $('.search-input').val();
+    keyword = keyword.replace(" ", "");
+    if (!keyword) {
+        $(".classify-nav li.on").click();
+        return;
+    }
     $(".reload-fix").show();
-    var url = commoditiesURL + "&limit=15&condition[tags]=" + $('.search-input').val();
+
+    var url = commoditiesURL + "&limit=15&condition[tags]=" + keyword;
     if ($('.classify-nav .on').index() != 0) {
         url += "&" + categoryPara + $('.classify-nav .on').text()
     }
@@ -395,7 +404,8 @@ $('.fa-search').click(function() {
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
-        localStorage.setItem("inputVal", $('.search-input').val());
+
+        localStorage.setItem("inputVal", keyword);
         localStorage.setItem("isSearch", true);
     })
 })
