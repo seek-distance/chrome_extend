@@ -43,20 +43,6 @@ $(".nav-item").click(function() {
     }
 })
 
-var navText = "";
-/*发送信息*/
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if (message) {
-        console.log(message);
-        $.get('http://tm.jymao.com/ds/jobs/gen-descr?category=' + navText, function(data) {
-            chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, { 'text': data }, function(response) {
-                    //向 content_script 发送消息
-                });
-            })
-        }, "text")
-    }
-})
 
 /*分类点击*/
 $(".classify-nav").on("click", "li", function() {
@@ -395,6 +381,7 @@ $('.fa-search').click(function() {
         return;
     }
     $(".reload-fix").show();
+
     var url = commoditiesURL + "&limit=15&condition[tags]=" + keyword;
     if ($('.classify-nav .on').index() != 0) {
         url += "&" + categoryPara + $('.classify-nav .on').text()
@@ -417,6 +404,7 @@ $('.fa-search').click(function() {
         localStorage.setItem('firstShopTime', $(".shopList li").first().find('button').attr('data-time'));
         localStorage.setItem('listNum', 15);
         localStorage.setItem("scrollTop", 0);
+
         localStorage.setItem("inputVal", keyword);
         localStorage.setItem("isSearch", true);
     })
