@@ -27,34 +27,33 @@ function domodal(){
 	console.log(openUrl)
 	$(".add-commodity-auto-button").parent().parent().find("input").val(openUrl);
 	$(".add-commodity-auto-button").click();
-	if (isSend){
-		var timer=setInterval(function(){
-			var nameInput=$("input[data-fv-field='price']");
-			if(nameInput.val()!=undefined && nameInput.val()!=oldVal){
-				clearInterval(timer);
-				oldVal=nameInput.val();
-				nameInput=$("input[data-fv-field='name']");				
-				if(nameInput.val()!="" && (nameInput.val().length>20 || nameInput.val().length<6)){
-					nameInput.val(name);
-				}
+	if (!isSend)	return;
+	var timer=setInterval(function(){
+		var nameInput=$("input[data-fv-field='price']");
+		if(nameInput.val()!=undefined && nameInput.val()!=oldVal){
+			clearInterval(timer);
+			oldVal=nameInput.val();
+			nameInput=$("input[data-fv-field='name']");				
+			if(nameInput.val()!="" && (nameInput.val().length>20 || nameInput.val().length<6)){
+				nameInput.val(name);
+			}
 
-				/*var imgItem = $(".commodity-image-list-container .thumb-container img");
-				if(imgItem.length>=5){
-					imgItem.last().attr('src',imgUrl);
-					imgItem.last().siblings().attr('value',imgUrl);
-				}else{
-					var tpl='<div class="thumb-container"><label><input type="radio" name="img_select" value="'+imgUrl+'" checked=""><img src="'+imgUrl+'"></label></div>';
-					$(".commodity-image-list-container .col-md-12").append(tpl);
-				}
-				$(".commodity-image-list-container .thumb-container label").last().click();*/
+			/*var imgItem = $(".commodity-image-list-container .thumb-container img");
+			if(imgItem.length>=5){
+				imgItem.last().attr('src',imgUrl);
+				imgItem.last().siblings().attr('value',imgUrl);
+			}else{
+				var tpl='<div class="thumb-container"><label><input type="radio" name="img_select" value="'+imgUrl+'" checked=""><img src="'+imgUrl+'"></label></div>';
+				$(".commodity-image-list-container .col-md-12").append(tpl);
+			}
+			$(".commodity-image-list-container .thumb-container label").last().click();*/
 
-				setTimeout(function(){
-					$(".reload").click();
-				},200)
-							
-			}		
-		},300)
-	}
+			setTimeout(function(){
+				$(".reload").click();
+			},200)
+						
+		}		
+	},300)
 }
 
 setInterval(function(){
