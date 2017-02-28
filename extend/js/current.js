@@ -30,14 +30,13 @@ function domodal(){
 	console.log(openUrl)
 	$(".add-commodity-auto-button").parent().parent().find("input").val(openUrl);
 	$(".add-commodity-auto-button").click();
-	if (!isSend)	return;
 	var timer=setInterval(function(){
 		var nameInput=$("input[data-fv-field='price']");
 		if(nameInput.val()!=undefined && nameInput.val()!=oldVal){
 			clearInterval(timer);
 			oldVal=nameInput.val();
 			nameInput=$("input[data-fv-field='name']");				
-			if(nameInput.val()!="" && (nameInput.val().length>20 || nameInput.val().length<6)){
+			if(isSend && nameInput.val()!="" && (nameInput.val().length>20 || nameInput.val().length<6)){
 				nameInput.val(name);
 			}
 
@@ -52,6 +51,7 @@ function domodal(){
 			$(".commodity-image-list-container .thumb-container label").last().click();*/
 
 			setTimeout(function(){
+				console.log('reload');
 				$(".reload").click();
 			},200)
 						
@@ -64,7 +64,9 @@ setInterval(function(){
 	iframe.find('.commodity-container .selectCommodityBtn').click(function(){
 		isSend=false;
 		openUrl=$(this).parent().attr('_href');
-		console.log(isSend)
+		setTimeout(function(){
+			$(".reload").click();
+		},500)
 	})
 	if($('.togglePriceDirectionBtn').length == 1){
 		if ($('.reload').length==0){
