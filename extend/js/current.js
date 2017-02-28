@@ -19,6 +19,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, response){
 		}*/
 	}else{
 		$("textarea[data-fv-field='description']").val(request.text);
+		setTimeout(function(){
+			$("textarea.form-control[name='description']").parents("form").formValidation('revalidateField', 'description');
+		},100)
 	}
 })
 
