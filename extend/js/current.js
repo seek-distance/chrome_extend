@@ -1,49 +1,37 @@
-var openUrl, oldVal, taobaoUrl, name, description, imgUrl;
+var openUrl, oldVal, taobaoUrl, description, imgUrl;
 var isSend = false;
 var iframe = $($('iframe').get(0).contentWindow.document);
 chrome.runtime.onMessage.addListener(function(request, sender, response) {
     if (!request.hasOwnProperty("text")) {
         taobaoUrl = request.taobaoUrl;
-        name = request.name;
-        description = request.description || "2222";
+        var name = request.name;
+        description = request.description;
         imgUrl = request.imgUrl;
         isSend = true;
 
         openUrl = taobaoUrl;
 
-        domodal();
-        /*if($("input[data-fv-field='name']").length==0){
-        	domodal();
-        }else{
-        	response(false);
-        }*/
+        domodal(name);
     } else {
         $("textarea[data-fv-field='description']").val(request.text);
     }
 })
 
-function domodal() {
+function domodal(name) {
     if ($('.add-commodity-auto-button').length == 0) {
-        setTimeout(function() {
-
-            $('iframe').get(0).contentWindow.document.getElementsByClassName('addLinkCommodityBtn')[0].click();
-
-            setTimeout(domodal, 300);
-        }, 300);
         $("button.add-baby-button").click();
-        return;
+        $('iframe').get(0).contentWindow.document.getElementsByClassName('addLinkCommodityBtn')[0].click();
     }
-    console.log(openUrl)
     $(".add-commodity-auto-button").parent().parent().find("input").val(openUrl);
     $(".add-commodity-auto-button").click();
     var timer = setInterval(function() {
-        var nameInput = $("input[data-fv-field='price']");
-        if (nameInput.val() != undefined && nameInput.val() != oldVal) {
+        var Input = $("input[data-fv-field='price']");
+        if (Input.val() != undefined && Input.val() != oldVal) {
             clearInterval(timer);
-            oldVal = nameInput.val();
-            nameInput = $("input[data-fv-field='name']");
-            if (isSend && nameInput.val() != "" && (nameInput.val().length > 20 || nameInput.val().length < 6)) {
-                nameInput.val(name);
+            oldVal = Input.val();
+            Input = $("input[data-fv-field='name']");
+            if (isSend && Input.val() != "" && (Input.val().length > 20 || Input.val().length < 6)) {
+                Input.val(name);
             }
 
             /*var imgItem = $(".commodity-image-list-container .thumb-container img");
@@ -70,9 +58,6 @@ setInterval(function() {
     iframe.find('.commodity-container .selectCommodityBtn').click(function() {
         isSend = false;
         openUrl = $(this).parent().attr('_href');
-        setTimeout(function() {
-            //   $(".reload").click();
-        }, 500)
     })
     if ($('.togglePriceDirectionBtn').length == 1) {
         var $descr = $("textarea[name='description']");
@@ -93,7 +78,7 @@ setInterval(function() {
         if ($('.insert-pic').length == 0) {
             $('.modal-footer').prepend('<button class="btn btn-danger insert-pic pull-left">插入图片</button>');
             $('.insert-pic').click(function() {
-                var text = $("input[data-fv-field='name']").val();
+                var name = $("input[data-fv-field='name']").val();
                 var updateSrc = $('.commodity-image-upload-container img').attr('src');
                 $('.add-img-manual-button').click();
                 var updateTimer = setInterval(function() {
@@ -101,11 +86,9 @@ setInterval(function() {
                         clearInterval(updateTimer);
                         $('.commodity-image-upload-container img').attr("src", updateSrc);
                         $('.commodity-image-upload-container .col-md-7 .form-group').addClass("has-success").find("input").val(updateSrc).siblings("span").find("small").attr("data-fv-result", "VALID")
-                        $('.commodity-image-upload-container textarea').val(text);
+                        $('.commodity-image-upload-container textarea').val(name);
                         $("button[data-bb-handler='success']").click();
-                        $('.add-baby-button').click();
-                        $('iframe').get(0).contentWindow.document.getElementsByClassName('addLinkCommodityBtn')[0].click();
-                        domodal();
+                        domodal(name);
                     }
                 }, 300)
             })
