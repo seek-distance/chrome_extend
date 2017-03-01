@@ -25,13 +25,9 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 function domodal() {
     if ($('.add-commodity-auto-button').length == 0) {
         setTimeout(function() {
-            var $btn = $(".addLinkCommodity2");
-            if ($btn.length === 0) {
-                $(".add-img-manual-button").after("<a class='addLinkCommodity2' href='javascript:alert(0);window.addLinkCommodity();return void(0)'/>");
-                $btn = $(".addLinkCommodity2");
-            }
-            $btn.click();
-            setTimeout(domodal, 300);
+			
+
+           // setTimeout(domodal, 300);
         }, 300);
         $("button.add-baby-button").click();
         return;
