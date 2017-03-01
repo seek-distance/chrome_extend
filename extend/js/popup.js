@@ -25,7 +25,7 @@ var dedup = makeDedupObj();
 }*/
 
 /*商品模板*/
-var listTemplet = '<li class="clearfix" ><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="deprecated" data-time="#{name}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
+var listTemplet = '<li class="clearfix" ><div class="shop-img"><a href="#{taobaoItemUrl}" target="_blank"><img src="#{imgUrl}"></a></div><div class="shop-detail"><p class="shop-title"><a href="#{taobaoItemUrl}" target="_blank" title="#{name}">#{name}</a><span class="originalDatetime">#{originalDatetime}</span></p><p class="shop-price">¥<span>#{price}</span><button data-descr="deprecated" data-time="#{createdAt}" data-imgUrl="#{imgUrl}" data-url="#{taobaoItemUrl}" class="fr addToPic">加入图集</button><a href="#{originalCollectionUrl}" target="_blank" class="origin fr">源</a></p></div></li>';
 
 /*底部导航点击*/
 $(".nav-item").click(function() {
@@ -101,7 +101,7 @@ $(".changeBtn").click(function() {
     }
 })
 
-var commoditiesURL = "http://tm.jymao.com/ds/g/Commodity?sortField=-name&select=-tags -taobaoUrl -descr -originalDescr&condition[taobaoItemUrl][$ne]=working&condition[taobaoItemUrl][$exists]=true";
+var commoditiesURL = "http://tm.jymao.com/ds/g/Commodity?sortField=-createdAt&select=-tags -taobaoUrl -descr -originalDescr&condition[taobaoItemUrl][$ne]=working&condition[taobaoItemUrl][$exists]=true";
 var categoryPara = "condition[categories]="
 
 /*请求页面分类和商品列表数据*/
@@ -113,6 +113,9 @@ doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"
         var inputVal = localStorage.getItem("inputVal");
         var url = '';
 
+        if (isNaN(Date.parse(firstShopTime))) {
+            firstShopTime = (new Date()).toUTCString();
+        }
         if (isSearch == "true") {
             url = commoditiesURL + "&condition[tags]=" + inputVal;
             if (classifyName != "全部") url += "&" + categoryPara + classifyName;

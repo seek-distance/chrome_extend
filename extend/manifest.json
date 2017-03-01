@@ -7,12 +7,10 @@
     "background": {
         "scripts": ["js/jquery.js", "js/background.js"]
     },
-    "content_scripts": [
-        {
-          "matches": ["*://kolplatform.jinritemai.com/index/article/addArticle*"],
-          "js": ["js/jquery.js", "js/current.js"]
-        }
-    ],
+    "content_scripts": [{
+        "matches": ["*://kolplatform.jinritemai.com/index/article/addArticle*"],
+        "js": ["js/jquery.js", "js/current.js"]
+    }],
     "browser_action": {
         "default_icon": "img/icon.png",
         "default_popup": "popup.html"
