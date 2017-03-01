@@ -31,7 +31,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
     }
 })
 
-
 function CommodityAdder(info) {
     this.info = info || {};
 }
@@ -100,7 +99,6 @@ CommodityAdder.prototype.domodal = function() {
             //var nameInput = $("input[data-fv-field='price']");
             //if (nameInput.val() != undefined && nameInput.val() != oldVal) {
             var nameInput = $("input[data-fv-field='name']");
-
             if (nameInput.length === 1 && self.info.name) {
                 clearInterval(timer);
                 if (self.info.isOurCommodity && nameInput.val() != "" && (nameInput.val().length > 20 || nameInput.val().length < 6)) {
@@ -118,10 +116,6 @@ CommodityAdder.prototype.domodal = function() {
                     $(".commodity-image-list-container .thumb-container label").last().click();
                 }
             }
-            //	setTimeout(function() {
-            //		console.log('reload');
-            //$(".reload").click();
-            //	}, 200)			
         },
         500)
 }
