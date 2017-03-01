@@ -25,9 +25,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
 function domodal() {
     if ($('.add-commodity-auto-button').length == 0) {
         setTimeout(function() {
-			
 
-           // setTimeout(domodal, 300);
+            $('iframe').get(0).contentWindow.document.getElementsByClassName('addLinkCommodityBtn')[0].click();
+
+            setTimeout(domodal, 300);
         }, 300);
         $("button.add-baby-button").click();
         return;
