@@ -1,5 +1,5 @@
 {
-    "name": "demo",
+    "name": "old",
     "version": "1.0",
     "manifest_version": 2,
     "description": "The first extension that I made.",
@@ -9,7 +9,8 @@
     },
     "content_scripts": [{
         "matches": ["*://kolplatform.jinritemai.com/index/article/addArticle*"],
-        "js": ["js/jquery.js", "js/current.js"]
+        "js": ["js/jquery.js", "js/current.js"],
+        "css": ["css/current.css"]
     }],
     "browser_action": {
         "default_icon": "img/icon.png",
