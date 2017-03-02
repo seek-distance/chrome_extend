@@ -33,6 +33,7 @@ modal.prototype={
             $('.insert-pic').click(function() {
                 var name = $("input[data-fv-field='name']").val();
                 var updateSrc = $('.commodity-image-upload-container img').attr('src');
+                var description = $("textarea[data-fv-field='description']").val();
                 $('.add-img-manual-button').click();
                 var updateTimer = setInterval(function() {
                     if ($('.commodity-image-upload-container').length == 1) {
@@ -41,6 +42,8 @@ modal.prototype={
                         $('.commodity-image-upload-container .col-md-7 .form-group').addClass("has-success").find("input").val(updateSrc).siblings("span").find("small").attr("data-fv-result", "VALID")
                         $('.commodity-image-upload-container textarea').val(name);
                         $("button[data-bb-handler='success']").click();
+
+                        self.info.description = description;
                         self.showModal(self.info,true);
                     }
                 }, 300)
@@ -50,7 +53,7 @@ modal.prototype={
     dealOur:function(){
         var self=this;
         var name = $("input[data-fv-field='name']");
-        if (name.val() != "" && (name.val().length > 20 || name.val().length < 6)) {
+        if (name.val() && name.val() != "" && (name.val().length > 20 || name.val().length < 6)) {
             name.val(self.info.name);
         }
 
@@ -84,21 +87,23 @@ modal.prototype={
 
         var timer = setInterval(function() {
             var price = $("input[data-fv-field='price']");
-            if (insert || price.val() != undefined && price.val() != self.oldPrice && price.val()!="") {
+            if (price.val() != undefined && price.val() != self.oldPrice && price.val()!="" || insert) {
                 clearInterval(timer);
                 self.oldPrice = price.val();                
 
                 if (self.isOurCommodity) {
                     self.dealOur();
                 }
-                
-                self.clickReload();
-                
-            }
-            if(insert && !self.isOurCommodity){
-                self.clickReload();
-            }
-        }, 300)
+
+                if(insert){
+                    setTimeout(function(){
+                        $("textarea[data-fv-field='description']").val(self.info.description);
+                    },500)                    
+                }else{
+                    self.clickReload();
+                }
+            }            
+        }, 500)
     }
 }
 
@@ -112,9 +117,6 @@ setInterval(function() {
     iframe.find('.commodity-container .selectCommodityBtn').click(function() {
         our.isOurCommodity = false;
         our.openUrl = $(this).parent().attr('_href');
-        setTimeout(function() {
-            $(".reload").click();
-        }, 1000)
     })
     our.addBtn();
 }, 300)
@@ -125,7 +127,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, response) {
         our.openUrl=request.taobaoUrl;
         var info={
             name : request.name,
-            description : request.description,
             imgUrl : request.imgUrl,
         }
 
