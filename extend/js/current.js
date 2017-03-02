@@ -66,6 +66,12 @@ modal.prototype={
         }
         $(".commodity-image-list-container .thumb-container label").last().click();
     },
+    clickReload:function(){
+        setTimeout(function() {
+            $(".reload").click();
+            //chrome.runtime.sendMessage($("input[data-fv-field='name']").val());
+        }, 200)
+    },
     showModal:function(info,insert){
         var self=this;
         this.info=info || {};
@@ -86,11 +92,11 @@ modal.prototype={
                     self.dealOur();
                 }
                 
-                setTimeout(function() {
-                    $(".reload").click();
-                    //chrome.runtime.sendMessage($("input[data-fv-field='name']").val());
-                }, 200)
+                self.clickReload();
                 
+            }
+            if(insert && !self.isOurCommodity){
+                self.clickReload();
             }
         }, 300)
     }
@@ -106,6 +112,9 @@ setInterval(function() {
     iframe.find('.commodity-container .selectCommodityBtn').click(function() {
         our.isOurCommodity = false;
         our.openUrl = $(this).parent().attr('_href');
+        setTimeout(function() {
+            $(".reload").click();
+        }, 1000)
     })
     our.addBtn();
 }, 300)
