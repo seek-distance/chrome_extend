@@ -105,7 +105,7 @@ var commoditiesURL = "http://tm.jymao.com/ds/g/Commodity?sortField=-createdAt&se
 var categoryPara = "condition[categories]="
 
 /*请求页面分类和商品列表数据*/
-doGet("http://tm.jymao.com/ds/g/Category", "<li>#{name}</li>", $(".classify-nav"), function() {
+doGet("http://tm.jymao.com/ds/g/Category", "<li data-pinyin=#{pinyin}>#{name}</li>", $(".classify-nav"), function() {
         var classifyName = localStorage.getItem("classifyName") || "全部";
         var listNum = localStorage.getItem("listNum") || 15;
         var firstShopTime = localStorage.getItem("firstShopTime");
@@ -429,3 +429,34 @@ function makeDedupObj() {
         }
     }
 }
+
+
+//filter category
+$(".classify-filter").keyup(function(evt) {
+    var keyword = $(".classify-filter").val();
+
+    var $items = $(".classify-nav li");
+
+    if (keyword) {
+        keyword = keyword.toUpperCase();
+        $items.each(function(idx, item) {
+            var text = $(item).text();
+            if (~text.indexOf(keyword)) {
+                $(item).removeClass("hidden")
+            } else {
+                //     $(item).addClass("hidden")
+                var pinyin = $(item).attr("data-pinyin");
+                if (pinyin) {
+                    if (~pinyin.indexOf(keyword)) {
+                        $(item).removeClass("hidden")
+                    } else {
+                        $(item).addClass("hidden")
+                    }
+                }
+            }
+
+        })
+    } else {
+        $items.removeClass("hidden")
+    }
+})

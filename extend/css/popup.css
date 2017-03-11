@@ -351,6 +351,13 @@ section {
 
 /* classify-name */
 
+.classify-filter {
+    margin: .2rem;
+    padding: 0 .5rem;
+    height: 25px;
+    width: 100%;
+}
+
 .classify-name {
     width: 80px;
     max-height: 450px;
@@ -536,4 +543,8 @@ form > button {
     display: block;
     color: #999;
     font-size: .3rem;
+}
+
+.hidden {
+    display: none;
 }
